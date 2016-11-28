@@ -10,6 +10,7 @@ namespace Assets.Service
         public int maxReconnects = 4;
         public float ReConnectDelay = 1f;
         public float UpdateTimmer = 0.25f;
+        public int historySize = 100;
 
         // dataload
         private List<WebData> downloads;
@@ -63,11 +64,6 @@ namespace Assets.Service
                 tmp += "null Data";
             }
             tmp += "\n";
-            return tmp;
-
-
-
-
             return tmp;
         }
 
@@ -127,19 +123,31 @@ namespace Assets.Service
 
         public void AddDownload(WebData dload)
         {
+            if (downloads == null)
+                downloads = new List<WebData>();
+
             downloads.Add(dload);
         }
 
         public void Awake()
         {
-            downloads = new List<WebData>();
             failed = new List<WebData>();
             done = new List<WebData>();
         }
 
         public void Update()
         {
+            CleanHistory();
             proceedDownload();
+        }
+
+        private void CleanHistory()
+        {
+            if (failed.Count > historySize)
+                failed.RemoveRange(0, (int)(historySize / 2));
+
+            if (done.Count > historySize)
+                done.RemoveRange(0, (int)(historySize / 2));
         }
     }
 }
