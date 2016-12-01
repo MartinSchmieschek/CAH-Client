@@ -1,0 +1,198 @@
+fileFormatVersion: 2
+guid: 08b0f0b1a3f2e2045a01ffe552d1585c
+timeCreated: 1480628773
+licenseType: Free
+ModelImporter:
+  serializedVersion: 19
+  fileIDToRecycleName:
+    100000: Dummy001
+    100002: Dummy002
+    100004: Dummy003
+    100006: Dummy004
+    100008: Dummy005
+    100010: Dummy006
+    100012: Dummy008
+    100014: Dummy009
+    100016: LetterRefer
+    100018: LetterRefer001
+    100020: LetterRefer002
+    100022: LetterRefer003
+    100024: LetterRefer004
+    100026: LetterRefer005
+    100028: LetterRefer006
+    100030: LetterRefer007
+    100032: //RootNode
+    400000: Dummy001
+    400002: Dummy002
+    400004: Dummy003
+    400006: Dummy004
+    400008: Dummy005
+    400010: Dummy006
+    400012: Dummy008
+    400014: Dummy009
+    400016: LetterRefer
+    400018: LetterRefer001
+    400020: LetterRefer002
+    400022: LetterRefer003
+    400024: LetterRefer004
+    400026: LetterRefer005
+    400028: LetterRefer006
+    400030: LetterRefer007
+    400032: //RootNode
+    2300000: LetterRefer
+    2300002: LetterRefer001
+    2300004: LetterRefer002
+    2300006: LetterRefer003
+    2300008: LetterRefer004
+    2300010: LetterRefer005
+    2300012: LetterRefer006
+    2300014: LetterRefer007
+    3300000: LetterRefer
+    3300002: LetterRefer001
+    3300004: LetterRefer002
+    3300006: LetterRefer003
+    3300008: LetterRefer004
+    3300010: LetterRefer005
+    3300012: LetterRefer006
+    3300014: LetterRefer007
+    4300000: LetterRefer
+    4300002: LetterRefer001
+    4300004: LetterRefer005
+    4300006: LetterRefer004
+    4300008: LetterRefer003
+    4300010: LetterRefer002
+    4300012: LetterRefer006
+    4300014: LetterRefer007
+    7400000: TitleTextAppear
+    9500000: //RootNode
+    11100000: //RootNode
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations:
+    - serializedVersion: 16
+      name: TitleTextAppear
+      takeName: Take 001
+      firstFrame: 60
+      lastFrame: 120
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: Dummy001
+        weight: 1
+      - path: Dummy001/LetterRefer005
+        weight: 1
+      - path: Dummy002
+        weight: 1
+      - path: Dummy002/LetterRefer004
+        weight: 1
+      - path: Dummy003
+        weight: 1
+      - path: Dummy003/LetterRefer003
+        weight: 1
+      - path: Dummy004
+        weight: 1
+      - path: Dummy004/LetterRefer002
+        weight: 1
+      - path: Dummy005
+        weight: 1
+      - path: Dummy005/LetterRefer
+        weight: 1
+      - path: Dummy006
+        weight: 1
+      - path: Dummy006/LetterRefer001
+        weight: 1
+      - path: Dummy008
+        weight: 1
+      - path: Dummy008/LetterRefer006
+        weight: 1
+      - path: Dummy009
+        weight: 1
+      - path: Dummy009/LetterRefer007
+        weight: 1
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    serializedVersion: 2
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    rootMotionBoneRotation: {x: 0, y: 0, z: 0, w: 1}
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 1
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
