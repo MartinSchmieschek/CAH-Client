@@ -10,7 +10,10 @@ namespace Assets.Controller.Phase
         public Atom ScreenSaverPhase;
         public float UpdateTiming = 0.1f;
         public float MaxStayOnTime = 10f;
-        public bool MouseInteraction = false;
+        public bool MouseInteraction = true;
+        public bool KeyBoardInteraction = true;
+        public KeyCode NextKey = KeyCode.UpArrow;
+        public KeyCode PreviewsKey = KeyCode.DownArrow;
 
         [SerializeField]
         public SelectorItem[] SelectableItems;
@@ -32,53 +35,47 @@ namespace Assets.Controller.Phase
 
         private void MouseInput()
         {
-            if (MouseInteraction)
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+
+            RaycastHit hit;
+
+            if (Physics.Raycast(ray, out hit))
             {
-                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-
-                RaycastHit hit;
-
-                if (Physics.Raycast(ray, out hit))
+                if (hit.collider != null)
                 {
-                    if (hit.collider != null)
+                    for (int i = 0; i < SelectableItems.Length; i++)
                     {
-                        for (int i = 0; i < SelectableItems.Length; i++)
+                        if (SelectableItems[i].MouseCollider != null && SelectableItems[i].MouseCollider.Equals(hit.collider))
                         {
-                            if (SelectableItems[i].MouseCollider != null && SelectableItems[i].MouseCollider.Equals(hit.collider))
-                            {
-                                SelectByID(i);
+                            SelectByID(i);
 
-                                if (Input.GetMouseButtonDown(0))
-                                    Activate();
-                            }
+                            if (Input.GetMouseButtonDown(0))
+                                Activate();
                         }
                     }
                 }
             }
-            
         }
 
         private void GetKeyBoardInput()
         {
 
-            if (Input.GetKeyDown(KeyCode.DownArrow))
+            if (Input.GetKeyDown(NextKey))
                 SelectNext();
 
-            if (Input.GetKeyDown(KeyCode.UpArrow))
+            if (Input.GetKeyDown(PreviewsKey))
                 SelectLast();
-
-            if (Input.GetKeyDown(KeyCode.Return))
-                Activate();
-
         }
 
         public void FixedUpdate()
         {
             // MouseUpdate
-            MouseInput();
+            if (MouseInteraction)
+                MouseInput();
 
             // keyboardInput
-            GetKeyBoardInput();
+            if (KeyBoardInteraction)
+                GetKeyBoardInput();
         }
 
         public override IEnumerator PhaseIteration(Atom previewesPhase)
