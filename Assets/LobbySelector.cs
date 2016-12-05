@@ -46,7 +46,7 @@ public class LobbySelector : Selector {
             {
                 if (tmpLobbys.Count > (startid + x + y))
                 {
-                    CreateLobbyCard(grid.GetAtYZ(x, y), transform.localScale, transform.localRotation * Quaternion.Euler(-90,0,0), tmpLobbys[startid + x + y]);
+                    CreateLobbyCard(grid.GetAtXY(x, y), transform.localScale, transform.localRotation * Quaternion.Euler(-90,0,0), tmpLobbys[startid + x + y]);
                 }
             }
         }
