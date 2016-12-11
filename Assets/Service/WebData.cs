@@ -1,9 +1,14 @@
 ﻿using UnityEngine;
+using UnityEngine.Events;
 
 namespace Assets.Service
 {
     public abstract class WebData
     {
+        public UnityAction OnSuccess;
+        public UnityAction OnFail;
+        public UnityAction OnStart;
+
         public string Name { get; private set; }
         public string WebAdress { get; private set; }
         private int numReconnections = 0;

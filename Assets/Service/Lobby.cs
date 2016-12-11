@@ -10,15 +10,17 @@ namespace Assets.Service
     [Serializable]
     public struct Lobby
     {
-        public string game_id;
-        public string create_date;
-        public string last_activity;
+        public int game_id;
+        public DateTime create_date;
+        public DateTime last_activity;
         public string game_name;
         public LobbyState state;
-        public string game_mode;
-        public string target_score;
-        public string kicktimer;
-        public string host_user_id;
-
+        public int game_mode;
+        public int target_score;
+        public int kicktimer;
+        public int host_user_id;
+        public int user_count;
+        public int max_players;
+        public Category[] categories;
     }
 }

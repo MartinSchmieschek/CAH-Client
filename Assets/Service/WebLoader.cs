@@ -9,13 +9,15 @@ namespace Assets.Service
     {
         public int maxReconnects = 4;
         public float ReConnectDelay = 1f;
-        public float UpdateTimmer = 0.25f;
-        public int historySize = 100;
+        public float DownloadStatusUpdateTimmer = 0.05f;
+        public float QueueUpdateTimer = 0.1f;
+        public bool isLoading = false;
+        private int historySize = 100;
 
         // dataload
-        private List<WebData> downloads;
-        private List<WebData> failed;
-        private List<WebData> done;
+        private List<WebData> downloads = new List<WebData>();
+        private List<WebData> failed = new List<WebData>();
+        private List<WebData> done = new List<WebData>();
 
         public string StatusText
         {
@@ -76,6 +78,9 @@ namespace Assets.Service
                 // remove Failed Loads
                 if (nextDload.IsDone && !string.IsNullOrEmpty(nextDload.Error))
                 {
+                    if (nextDload.OnFail != null)
+                        nextDload.OnFail.Invoke();
+
                     failed.Add(nextDload);
                     downloads.Remove(nextDload);
                     return;
@@ -84,6 +89,9 @@ namespace Assets.Service
                 // remove done dloads
                 if (nextDload.IsDone && string.IsNullOrEmpty(nextDload.Error))
                 {
+                    if (nextDload.OnSuccess != null)
+                        nextDload.OnSuccess.Invoke();
+
                     done.Add(nextDload);
                     downloads.Remove(nextDload);
                     return;
@@ -92,6 +100,9 @@ namespace Assets.Service
                 // not Started
                 if (!nextDload.IsDone && nextDload.downloadData == null)
                 {
+                    if (nextDload.OnStart != null)
+                        nextDload.OnStart.Invoke();
+
                     StartCoroutine(LoadWebData(nextDload));
                     return;
                 }
@@ -105,40 +116,50 @@ namespace Assets.Service
                 wData.Load();
                 while (string.IsNullOrEmpty(wData.Error) && !wData.IsDone)
                 {
-                    new WaitForSeconds(UpdateTimmer);
+                    new WaitForSeconds(DownloadStatusUpdateTimmer);
+                    yield return wData;
                 }
 
                 if (wData.IsDone && string.IsNullOrEmpty(wData.Error))
                 {
                     wData.Dispose();
-                    yield break;
+                    //yield break;
+                    yield return wData;
                 }
                 else
                 {
-                    Debug.Log(wData.Error);
+                    Debug.Log(wData.Error +" url:"+ wData.downloadData.url);
                     new WaitForSeconds(ReConnectDelay);
+                    //yield return wData;
                 }
             }
         }
 
+        IEnumerator ProceedQueue()
+        {
+            isLoading = true;
+            while (downloads.Count > 0)
+            {
+                proceedDownload();
+                yield return new WaitForSeconds(QueueUpdateTimer);
+
+                CleanHistory();
+            }
+            isLoading = false;
+            yield return null;
+        }
+
         public void AddDownload(WebData dload)
         {
-            if (downloads == null)
-                downloads = new List<WebData>();
-
             downloads.Add(dload);
+
+            if (!isLoading)
+                StartCoroutine(ProceedQueue());
         }
 
         public void Awake()
         {
-            failed = new List<WebData>();
-            done = new List<WebData>();
-        }
-
-        public void Update()
-        {
-            CleanHistory();
-            proceedDownload();
+            Resources.UnloadUnusedAssets();
         }
 
         private void CleanHistory()

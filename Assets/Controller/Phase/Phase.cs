@@ -39,7 +39,7 @@ namespace Assets.Controller.Phase
             {
                 new WaitForSeconds(UpdateTiming);
                 // do your phase depending stuff here
-                Debug.Log(String.Format("EmptyPhaseRunning!"));
+                Debug.Log(String.Format("Running Phase:{0}", gameObject.name.ToString()));
                 //
                 yield return null;
             }

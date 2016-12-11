@@ -94,7 +94,7 @@ public class Card : MonoBehaviour
 
             animator.SetTrigger("Spawn");
         }
-        
+
     }
 
     public void Update()
@@ -108,25 +108,42 @@ public class Card : MonoBehaviour
     private void setTextToCard()
     {
         string tmp = "";
+        string final = "";
+        string currLine = "";
 
         if (TextVisibility < 0)
             TextVisibility = 0;
         if (TextVisibility > 100)
             TextVisibility = 100f;
 
-        int ccount = 0;
-        for (int i = 0; i < (int)(CardText.Length * (TextVisibility/100)); i++)
+        //Text wrapping
+        string[] words = CardText.Split(' ');
+
+        foreach (string word in words)
         {
-            ccount++;
-            tmp += CardText[i];
-            if (ccount > MaxCharsOnCard)
+            int l = currLine.Length + word.Length;
+
+            if (l < MaxCharsOnCard)
             {
-                tmp += "\n";
-                ccount = 0;
+                currLine += word + " ";
+            }
+            else if (l > MaxCharsOnCard)
+            {
+                currLine += "\n";
+                final += currLine;
+                currLine = "";
+                currLine += word + " ";
             }
         }
+        final += currLine;
 
-        textMesh.text = tmp;
+        //Text fade in
+        for (int i = 0; i < (int)(CardText.Length * (TextVisibility / 100)); i++)
+        {
+            tmp += final[i];
+        }
+
+        textMesh.text = final;
     }
 
     private void Morph()

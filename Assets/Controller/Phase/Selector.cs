@@ -84,6 +84,8 @@ namespace Assets.Controller.Phase
 
             while (IsRunning)
             {
+                Debug.Log(String.Format("Running Phase:{0}", gameObject.name.ToString()));
+
                 new WaitForSeconds(UpdateTiming);
                 stayontime += Time.deltaTime;
 
