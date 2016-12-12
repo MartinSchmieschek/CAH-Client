@@ -5,6 +5,7 @@ namespace Assets.Service
 {
     public class JSONFromWeb : WebData
     {
+        private Token[] token;
         public Type JSONType { get; private set; }
         private object result;
 
@@ -13,6 +14,16 @@ namespace Assets.Service
         {
             JSONType = type;
         }
+
+        public JSONFromWeb(string name, string webadress, Token[] token, Type type) : base(name, webadress + proceedToken(token))
+        {
+            JSONType = type;
+        }
+        public JSONFromWeb(string name, string webadress, Token token, Type type) : base(name, webadress + token.Get())
+        {
+            JSONType = type;
+        }
+
 
         public object Result
         {
@@ -38,6 +49,16 @@ namespace Assets.Service
             else
                 return JsonUtility.FromJson(downloadData.text, JSONType);
 
+        }
+
+        private static string proceedToken(Token[] to)
+        {
+            string tmp = "";
+            foreach (var toval in to)
+            {
+                tmp += toval;
+            }
+            return tmp;
         }
     }
 }

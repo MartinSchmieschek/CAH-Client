@@ -7,12 +7,16 @@ public class TitleScreenController : MonoBehaviour
 
     public Animation Text;
     public Animation TextBackground;
+    public Animation MenuText;
+    public Animation MenuBackground;
 
     public void Awake()
     {
         Text.Stop();
         TextBackground.Stop();
-    }
+        MenuText.Stop();
+        MenuBackground.Stop();
+}
 
     public void Start()
     {
@@ -27,8 +31,16 @@ public class TitleScreenController : MonoBehaviour
     IEnumerator Appear()
     {
         TextBackground.Play();
+        
         yield return new WaitForSeconds(1);
+
+        MenuBackground.Play();
+
+        yield return new WaitForSeconds(1.5f);
+
         Text.Play();
+        MenuText.Play();
+        
         yield return null;
     }
 }

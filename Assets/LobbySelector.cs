@@ -35,29 +35,28 @@ public class LobbySelector : Selector {
 
     public void ScrollListBack()
     {
-        if (currentStartId > 0)
-        {
-            currentStartId--;
-            UpdateLobbyItems();
-        }
+        if (IsRunning)
+            if (currentStartId > 0)
+            {
+                currentStartId--;
+                UpdateLobbyItems();
+            }
             
     }
     public void ScrollListForward()
     {
-        if (currentStartId + (NumRowItems* NumRows) < lobbyLoader.OpenLobbies.Count)
-        {
-            currentStartId++;
-            UpdateLobbyItems();
-        }
+        if (IsRunning)
+            if (currentStartId + (NumRowItems* NumRows) < lobbyLoader.OpenLobbies.Count)
+            {
+                currentStartId++;
+                UpdateLobbyItems();
+            }
     }
 
     public void Leave()
     {
-        Controller.StartPhase(LeavePhase);
-    }
-    public void Create()
-    {
-        Controller.StartPhase(CreatePhase);
+        if (IsRunning)
+            Controller.StartPhase(LeavePhase);
     }
 
     // Update is called once per frame
@@ -87,6 +86,24 @@ public class LobbySelector : Selector {
             foreach (var item in CreatedVisuals)
                 Destroy(item);
         }
+    }
+
+    public override IEnumerator PhaseIteration(Atom previewesPhase)
+    {
+        Debug.Log(String.Format("Start Phase:{0}", gameObject.name.ToString()));
+
+        while (IsRunning)
+        {
+            Debug.Log(String.Format("Running Phase:{0}", gameObject.name.ToString()));
+
+            new WaitForSeconds(UpdateTiming);
+
+            // Update lobby list silent
+
+            yield return null;
+        }
+
+        Debug.Log(String.Format("Ending Phase:{0}", gameObject.name.ToString()));
     }
 
     private void CreateLobbyItems()

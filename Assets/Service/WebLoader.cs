@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Assets.Service
 {
-    class WebLoader : MonoBehaviour
+    public class WebLoader : MonoBehaviour
     {
         public int maxReconnects = 4;
         public float ReConnectDelay = 1f;

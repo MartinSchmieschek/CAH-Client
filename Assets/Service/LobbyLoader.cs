@@ -7,7 +7,6 @@ using UnityEngine.Events;
 
 namespace Assets.Service
 {
-    [RequireComponent(typeof(WebLoader))]
     public class LobbyLoader : MonoBehaviour
     {
         public string ServerAdress;
@@ -32,7 +31,7 @@ namespace Assets.Service
         public UnityAction OnRefreshed;
 
         private float refeshTimer;
-        private WebLoader webLoader;
+        public WebLoader WebLoader;
 
         private Lobbies lobbies;
         private JSONFromWeb currentLobbieLoad;
@@ -78,8 +77,7 @@ namespace Assets.Service
 
         public void Awake()
         {
-            webLoader = GetComponent<WebLoader>();
-            if (webLoader == null)
+            if (WebLoader == null)
                 throw new System.Exception("WebLoader cann not be located");
 
             IsObserving = false;
@@ -88,7 +86,7 @@ namespace Assets.Service
         private void getLobbies()
         {
             currentLobbieLoad = new JSONFromWeb("GetLobbies", ServerAdress + @"/lobby/get-lobbies", typeof(Lobbies));
-            webLoader.AddDownload(currentLobbieLoad);
+            WebLoader.AddDownload(currentLobbieLoad);
         }
 
         private void processLobbyData()

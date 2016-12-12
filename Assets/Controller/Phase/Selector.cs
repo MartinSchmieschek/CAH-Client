@@ -11,6 +11,7 @@ namespace Assets.Controller.Phase
         public float UpdateTiming = 0.1f;
         public float MaxStayOnTime = 10f;
         public bool MouseInteraction = true;
+        public LayerMask Layer;
         public bool KeyBoardInteraction = true;
         public KeyCode NextKey = KeyCode.UpArrow;
         public KeyCode PreviewsKey = KeyCode.DownArrow;
@@ -36,10 +37,9 @@ namespace Assets.Controller.Phase
         private void MouseInput()
         {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-
             RaycastHit hit;
 
-            if (Physics.Raycast(ray, out hit))
+            if (Physics.Raycast(ray, out hit,Layer))
             {
                 if (hit.collider != null)
                 {
@@ -47,7 +47,8 @@ namespace Assets.Controller.Phase
                     {
                         if (SelectableItems[i].MouseCollider != null && SelectableItems[i].MouseCollider.Equals(hit.collider))
                         {
-                            SelectByID(i);
+                            //if (selectionIndex != i)
+                                SelectByID(i);
 
                             if (Input.GetMouseButtonDown(0))
                                 Activate();
@@ -69,13 +70,17 @@ namespace Assets.Controller.Phase
 
         public void FixedUpdate()
         {
-            // MouseUpdate
-            if (MouseInteraction)
-                MouseInput();
+            if (IsRunning)
+            {
+                // MouseUpdate
+                if (MouseInteraction)
+                    MouseInput();
 
-            // keyboardInput
-            if (KeyBoardInteraction)
-                GetKeyBoardInput();
+                // keyboardInput
+                if (KeyBoardInteraction)
+                    GetKeyBoardInput();
+            }
+
         }
 
         public override IEnumerator PhaseIteration(Atom previewesPhase)
