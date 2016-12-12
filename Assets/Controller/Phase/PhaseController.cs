@@ -8,6 +8,7 @@ namespace Assets.Controller.Phase
     {
         private List<Atom> phases;
         public Atom CurrentPhase;
+        public float UpdateTimming = 0.1f;
 
         public PhaseController ()
         {

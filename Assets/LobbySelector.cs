@@ -17,9 +17,6 @@ public class LobbySelector : Selector {
     public int NumRows = 2;
     public float RowDistance = 2f;
 
-    public Atom LeavePhase;
-    public Atom CreatePhase;
-
     private List<SelectorItem> CreatedItems = new List<SelectorItem>();
     private List<Card> CreatedVisuals = new List<Card>();
 
@@ -51,12 +48,6 @@ public class LobbySelector : Selector {
                 currentStartId++;
                 UpdateLobbyItems();
             }
-    }
-
-    public void Leave()
-    {
-        if (IsRunning)
-            Controller.StartPhase(LeavePhase);
     }
 
     // Update is called once per frame
@@ -96,7 +87,7 @@ public class LobbySelector : Selector {
         {
             Debug.Log(String.Format("Running Phase:{0}", gameObject.name.ToString()));
 
-            new WaitForSeconds(UpdateTiming);
+            new WaitForSeconds(Controller.UpdateTimming);
 
             // Update lobby list silent
 

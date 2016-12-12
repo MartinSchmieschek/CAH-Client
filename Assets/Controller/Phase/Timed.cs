@@ -25,7 +25,7 @@ namespace Assets.Controller.Phase
 
             while (IsRunning && stayontime < MaxStayOnTime)
             {
-                new WaitForSeconds(UpdateTiming);
+                new WaitForSeconds(Controller.UpdateTimming);
                 stayontime += Time.deltaTime;
                 yield return null;
             }

@@ -8,7 +8,6 @@ namespace Assets.Controller.Phase
     public class Selector : Atom
     {
         public Atom ScreenSaverPhase;
-        public float UpdateTiming = 0.1f;
         public float MaxStayOnTime = 10f;
         public bool MouseInteraction = true;
         public LayerMask Layer;
@@ -91,7 +90,7 @@ namespace Assets.Controller.Phase
             {
                 Debug.Log(String.Format("Running Phase:{0}", gameObject.name.ToString()));
 
-                new WaitForSeconds(UpdateTiming);
+                new WaitForSeconds(Controller.UpdateTimming);
                 stayontime += Time.deltaTime;
 
                 // Go to Screensaverphase

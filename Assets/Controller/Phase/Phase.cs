@@ -8,7 +8,6 @@ namespace Assets.Controller.Phase
     public class Phase : Atom
     {
         public Atom NextPhase;
-        public float UpdateTiming = 0.1f;
         public UnityEvent OnActivate;
         public UnityEvent OnDeactivate;
 
@@ -22,12 +21,6 @@ namespace Assets.Controller.Phase
            Controller.StartPhase(NextPhase);
         }
 
-        public void DoNextPhase(Atom suggestedNextPhase)
-        {
-            this.NextPhase = suggestedNextPhase;
-            this.DoNextPhase();
-        }
-
         public override IEnumerator PhaseIteration(Atom previewesPhase)
         {
             Debug.Log(String.Format("Start Phase:{0}", gameObject.name.ToString()));
@@ -37,7 +30,7 @@ namespace Assets.Controller.Phase
 
             while (IsRunning)
             {
-                new WaitForSeconds(UpdateTiming);
+                new WaitForSeconds(Controller.UpdateTimming);
                 // do your phase depending stuff here
                 Debug.Log(String.Format("Running Phase:{0}", gameObject.name.ToString()));
                 //

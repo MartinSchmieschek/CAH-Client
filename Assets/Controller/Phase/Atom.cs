@@ -17,11 +17,6 @@ namespace Assets.Controller.Phase
             this.isrunning = false;
         }
 
-        public void Tick()
-        {
-            Tick();
-        }
-
         public virtual void Tick(Atom triggerPhase)
         {
             isrunning = true;
@@ -33,7 +28,7 @@ namespace Assets.Controller.Phase
             Debug.Log(String.Format("Start Phase:{0}", this.gameObject.name.ToString()));
             while (isrunning)
             {
-                new WaitForSeconds(0.1f);
+                new WaitForSeconds(Controller.UpdateTimming);
                 Debug.Log(String.Format("EmptyPhaseRunning!"));
                 yield return null;
             }
