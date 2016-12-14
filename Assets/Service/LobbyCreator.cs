@@ -5,27 +5,24 @@ using Assets.Service;
 
 public class LobbyCreator : MonoBehaviour {
 
-    public WebLoader WebLoader;
-    public string ServerAdress;
+    public PeristentGameProperties GP;
 
     public void Awake()
     {
-        if (WebLoader == null)
-            throw new System.Exception("WebLoader cann not be located");
+        if (GP == null)
+            throw new System.Exception("GameProperties can not be located");
     }
 
     public void CreateLobby()
     {
-        string clientToken = "605c76cee94ff776619ae006f51d4afb";
-
         Token dat = new Token()
         {
             Name = "clientToken",
-            Value = clientToken,
+            Value = GP.Token,
         };
 
-        var newLobby = new JSONFromWeb("CreateLobby", ServerAdress + @"/lobby/create-lobby",dat, typeof(Lobbies));
-        WebLoader.AddDownload(newLobby);
+        var newLobby = new JSONFromWeb("CreateLobby", GP.GameServer + @"/lobby/create-lobby",dat, typeof(Lobbies));
+        GP.WebLoader.AddDownload(newLobby);
         
     }
 

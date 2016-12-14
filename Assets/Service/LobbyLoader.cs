@@ -9,7 +9,7 @@ namespace Assets.Service
 {
     public class LobbyLoader : MonoBehaviour
     {
-        public string ServerAdress;
+        public PeristentGameProperties GP;
         public float AutoRefeshTime = 30;
         public bool IsObserving { get; private set; }
         public bool Connected
@@ -31,7 +31,6 @@ namespace Assets.Service
         public UnityAction OnRefreshed;
 
         private float refeshTimer;
-        public WebLoader WebLoader;
 
         private Lobbies lobbies;
         private JSONFromWeb currentLobbieLoad;
@@ -77,16 +76,16 @@ namespace Assets.Service
 
         public void Awake()
         {
-            if (WebLoader == null)
-                throw new System.Exception("WebLoader cann not be located");
+            if (GP == null)
+                throw new System.Exception("GameProperties can not be located");
 
             IsObserving = false;
         }
 
         private void getLobbies()
         {
-            currentLobbieLoad = new JSONFromWeb("GetLobbies", ServerAdress + @"/lobby/get-lobbies", typeof(Lobbies));
-            WebLoader.AddDownload(currentLobbieLoad);
+            currentLobbieLoad = new JSONFromWeb("GetLobbies", GP.GameServer + @"/lobby/get-lobbies", typeof(Lobbies));
+            GP.WebLoader.AddDownload(currentLobbieLoad);
         }
 
         private void processLobbyData()
