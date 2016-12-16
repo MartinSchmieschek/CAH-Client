@@ -7,9 +7,8 @@ using UnityEngine.Events;
 
 namespace Assets.Service
 {
-    public class LobbyLoader : MonoBehaviour
+    public class LobbyLoader : APIBase
     {
-        public PeristentGameProperties GP;
         public float AutoRefeshTime = 30;
         public bool IsObserving { get; private set; }
         public bool Connected
@@ -74,18 +73,15 @@ namespace Assets.Service
             return matchcounter;
         }
 
-        public void Awake()
+        public void Start()
         {
-            if (GP == null)
-                throw new System.Exception("GameProperties can not be located");
-
             IsObserving = false;
         }
 
         private void getLobbies()
         {
-            currentLobbieLoad = new JSONFromWeb("GetLobbies", GP.GameServer + @"/lobby/get-lobbies", typeof(Lobbies));
-            GP.WebLoader.AddDownload(currentLobbieLoad);
+            currentLobbieLoad = new JSONFromWeb("GetLobbies", base.GameProperties.GameServer + @"/lobby/get-lobbies", typeof(Lobbies));
+            base.GameProperties.WebLoader.AddDownload(currentLobbieLoad);
         }
 
         private void processLobbyData()

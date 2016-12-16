@@ -13,18 +13,12 @@ namespace Assets.Service
         public string clientToken;
     }
 
-    public class Authenticate : MonoBehaviour
+    public class Authenticate : APIBase
     {
-        public PeristentGameProperties GP;
         public UnityEvent OnSucces;
         public String UserName { get; set; }
         private JSONFromWeb data;
 
-        public void Awake()
-        {
-            if (GP == null)
-                throw new System.Exception("GameProperties can not be located");
-        }
 
         public void DoIt()
         {
@@ -34,31 +28,35 @@ namespace Assets.Service
                 Value = UserName,
             };
 
-            data = new JSONFromWeb("Authenticate", GP.GameServer + @"/lobby/authenticate", dat, typeof(AutenticateResponse));
-            data.OnSuccess += new UnityAction(downloadSucceeded);
-            data.OnSuccess += new UnityAction(downloadFailed);
-            GP.WebLoader.AddDownload(data);
+            data = new JSONFromWeb("Authenticate", base.GameProperties.GameServer + @"/lobby/authenticate", dat, typeof(AutenticateResponse));
+            data.OnSuccess += new UnityAction(connectionSucceeded);
+            data.OnSuccess += new UnityAction(connectionFailed);
+            GameProperties.WebLoader.AddDownload(data);
         }
 
-        private void downloadSucceeded ()
+        private void connectionSucceeded ()
         {
             if (data.IsDone)
             {
                 AutenticateResponse result = (AutenticateResponse)data.Result;
                 if (result.success)
                 {
-                    GP.UserName = UserName;
-                    GP.Token = result.clientToken;
+                    GameProperties.UserName = UserName;
+                    GameProperties.Token = result.clientToken;
                     if (OnSucces != null)
                         OnSucces.Invoke();
+                }
+                else
+                {
+                    Error = "Server rejected request";
                 }
             }
 
         }
 
-        private void downloadFailed()
+        private void connectionFailed()
         {
-
+            Error = "Connection failed";
         }
 
     }
