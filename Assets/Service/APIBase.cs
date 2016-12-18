@@ -29,16 +29,26 @@ namespace Assets.Service
             }
 
         }
-        public PeristentGameProperties GameProperties { get; private set; }
-        public string Log { get; private set; }
+        private PeristentGameProperties gameProperties;
+        public PeristentGameProperties GameProperties
+        {
+            get
+            {
+                return gameProperties;
+            }
+            private set
+            {
+                gameProperties = value;
+            }
+        }
 
         public void Awake()
         {
 
-            var GameProperties = FindObjectOfType<PeristentGameProperties>();
+            GameProperties = FindObjectOfType<PeristentGameProperties>();
 
             if (GameProperties == null)
-                throw new System.Exception("GameProperties can not be located");
+                Error = "GameProperties can not be located";
         }
 
         private void ErrorMessage(string em)

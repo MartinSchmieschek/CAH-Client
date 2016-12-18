@@ -22,7 +22,7 @@ public class LobbySelector : Selector {
 
     private int currentStartId = 0;
 
-    void Awake()
+    void Start()
     {
         lobbyLoader = GetComponent<LobbyLoader>();
         if (lobbyLoader == null)

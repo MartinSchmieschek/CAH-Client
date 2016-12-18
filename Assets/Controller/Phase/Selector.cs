@@ -147,20 +147,24 @@ namespace Assets.Controller.Phase
 
         private void doSelection()
         {
-            Debug.Log(selectionIndex);
-            var s = SelectableItems[selectionIndex];
-            if (s != null)
+            if (IsRunning && selectionIndex < SelectableItems.Length)
             {
-                if (s.OnDeSelected != null)
+                Debug.Log(selectionIndex);
+                var s = SelectableItems[selectionIndex];
+                if (s != null)
                 {
-                    SelectableItems[lastSelection].OnDeSelected.Invoke();
-                }
+                    if (s.OnDeSelected != null)
+                    {
+                        SelectableItems[lastSelection].OnDeSelected.Invoke();
+                    }
 
-                if (s.OnSelected != null)
-                {
-                    SelectableItems[selectionIndex].OnSelected.Invoke();
+                    if (s.OnSelected != null)
+                    {
+                        SelectableItems[selectionIndex].OnSelected.Invoke();
+                    }
                 }
             }
+            
         }
 
         public void Activate()

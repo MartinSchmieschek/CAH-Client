@@ -7,8 +7,6 @@ namespace Assets.Service
 {
     public class WebLoader : MonoBehaviour
     {
-        public int maxReconnects = 4;
-        public float ReConnectDelay = 1f;
         public float DownloadStatusUpdateTimmer = 0.05f;
         public float QueueUpdateTimer = 0.1f;
         public bool isLoading = false;
@@ -76,7 +74,7 @@ namespace Assets.Service
                 WebData nextDload = downloads.FirstOrDefault<WebData>();
 
                 // remove Failed Loads
-                if (nextDload.IsDone && !string.IsNullOrEmpty(nextDload.Error))
+                if (!string.IsNullOrEmpty(nextDload.Error))
                 {
                     if (nextDload.OnFail != null)
                         nextDload.OnFail.Invoke();
@@ -111,7 +109,7 @@ namespace Assets.Service
 
         IEnumerator LoadWebData(WebData wData)
         {
-            while (!wData.IsDone && wData.NumReconnections < maxReconnects)
+            while (!wData.IsDone && string.IsNullOrEmpty(wData.Error))
             {
                 wData.Load();
                 while (string.IsNullOrEmpty(wData.Error) && !wData.IsDone)
@@ -123,16 +121,17 @@ namespace Assets.Service
                 if (wData.IsDone && string.IsNullOrEmpty(wData.Error))
                 {
                     wData.Dispose();
-                    //yield break;
                     yield return wData;
                 }
                 else
                 {
-                    Debug.Log(wData.Error +" url:"+ wData.downloadData.url);
-                    new WaitForSeconds(ReConnectDelay);
-                    //yield return wData;
+                    Debug.Log(wData.Error);
+                    yield return wData;
                 }
             }
+
+            yield return wData;
+
         }
 
         IEnumerator ProceedQueue()

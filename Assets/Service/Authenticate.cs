@@ -22,16 +22,24 @@ namespace Assets.Service
 
         public void DoIt()
         {
-            Token dat = new Token()
+            if (!string.IsNullOrEmpty(UserName))
             {
-                Name = "name",
-                Value = UserName,
-            };
+                Token dat = new Token()
+                {
+                    Name = "name",
+                    Value = UserName,
+                };
 
-            data = new JSONFromWeb("Authenticate", base.GameProperties.GameServer + @"/lobby/authenticate", dat, typeof(AutenticateResponse));
-            data.OnSuccess += new UnityAction(connectionSucceeded);
-            data.OnSuccess += new UnityAction(connectionFailed);
-            GameProperties.WebLoader.AddDownload(data);
+                data = new JSONFromWeb("Authenticate", base.GameProperties.GameServer + @"/lobby/authenticate", dat, typeof(AutenticateResponse));
+                data.OnSuccess += new UnityAction(connectionSucceeded);
+                data.OnFail += new UnityAction(connectionFailed);
+                GameProperties.WebLoader.AddDownload(data);
+            }
+            else
+            {
+                Error = "No User Name entered";
+            }
+            
         }
 
         private void connectionSucceeded ()
