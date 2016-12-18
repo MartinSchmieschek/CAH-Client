@@ -66,11 +66,6 @@ public class Card : MonoBehaviour
         }
     }
 
-    public void OnDestroy()
-    {
-        animator.SetTrigger("DeSpawn");
-    }
-
     void Awake()
     {
         if (gameObject != null)
@@ -91,8 +86,6 @@ public class Card : MonoBehaviour
             {
                 throw new System.Exception("No VFX Child for CardMesh, MeshRenderer cannot found");
             }
-
-            animator.SetTrigger("Spawn");
         }
 
     }

@@ -12,8 +12,10 @@ namespace Assets.Controller.Phase
     {
         public Atom Phase = null;
         public UnityEvent OnSelected;
-        public UnityEvent OnDeSelected;
+        public UnityEvent OnDeselected;
         public UnityEvent OnActivated;
         public Collider MouseCollider;
+
+
     }
 }

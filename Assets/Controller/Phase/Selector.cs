@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System;
+using UnityEngine;
+using UnityEngine.Events;
 
 namespace Assets.Controller.Phase
 {
@@ -14,6 +16,7 @@ namespace Assets.Controller.Phase
         public bool KeyBoardInteraction = true;
         public KeyCode NextKey = KeyCode.UpArrow;
         public KeyCode PreviewsKey = KeyCode.DownArrow;
+        public KeyCode AvtivateKey = KeyCode.Return;
 
         [SerializeField]
         public SelectorItem[] SelectableItems;
@@ -24,7 +27,47 @@ namespace Assets.Controller.Phase
 
         public void Awake()
         {
+            GetItems(gameObject.GetComponentsInChildren<Atom>(false));
             doSelection();
+        }
+
+        public void GetItems (Atom[] data)
+        {
+            foreach (var item in data)
+            {
+                    if (item != null && item.gameObject != gameObject)
+                    {
+                        SelectorItem si = new SelectorItem();
+                        si.Phase = item;
+
+                        SelectorActor sa = item.GetComponent<SelectorActor>();
+                        if (sa != null)
+                        {
+                            si.OnActivated = new UnityEvent();
+                            si.OnActivated.AddListener(new UnityAction(sa.Activate));
+
+                            si.OnSelected = new UnityEvent();
+                            si.OnSelected.AddListener(new UnityAction(sa.Select));
+
+                            si.OnDeselected = new UnityEvent();
+                            si.OnDeselected.AddListener(new UnityAction(sa.Deselect));
+                        }
+
+                        Collider co = item.GetComponent<Collider>();
+                        if (co != null)
+                        {
+                            si.MouseCollider = co; 
+                        }
+
+                        Array.Resize(ref SelectableItems, SelectableItems.Length + 1);
+                        SelectableItems[SelectableItems.Length-1] = si;
+                    }
+
+
+                
+
+
+            }
         }
 
         public Selector()
@@ -59,6 +102,8 @@ namespace Assets.Controller.Phase
 
         private void GetKeyBoardInput()
         {
+            if (Input.GetKeyDown(AvtivateKey))
+                Activate();
 
             if (Input.GetKeyDown(NextKey))
                 SelectNext();
@@ -151,9 +196,9 @@ namespace Assets.Controller.Phase
             var s = SelectableItems[selectionIndex];
             if (s != null)
             {
-                if (s.OnDeSelected != null)
+                if (s.OnDeselected != null)
                 {
-                    SelectableItems[lastSelection].OnDeSelected.Invoke();
+                    SelectableItems[lastSelection].OnDeselected.Invoke();
                 }
 
                 if (s.OnSelected != null)
@@ -169,7 +214,7 @@ namespace Assets.Controller.Phase
             if (s != null && IsRunning)
             {
                 if (s.OnSelected != null)
-                    SelectableItems[selectionIndex].OnSelected.Invoke();
+                    SelectableItems[selectionIndex].OnActivated.Invoke();
 
                 var NextPhase = SelectableItems[selectionIndex].Phase;
                 Controller.StartPhase(NextPhase);
