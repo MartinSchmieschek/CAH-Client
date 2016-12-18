@@ -73,19 +73,7 @@ public class Card : MonoBehaviour
             textMesh = GetComponentInChildren<TextMesh>();
             textMesh.text = CardText;
 
-            animator = GetComponent<Animator>();
-
-            // GetCardMesh
-            Transform tmp = transform.FindChild("Animated");
-            tmp = tmp.FindChild("VFX");
-            if (tmp != null)
-            {
-                cardMeshRenderer = tmp.gameObject.GetComponentInChildren<MeshRenderer>();
-            }
-            else
-            {
-                throw new System.Exception("No VFX Child for CardMesh, MeshRenderer cannot found");
-            }
+            cardMeshRenderer = gameObject.GetComponentInChildren<MeshRenderer>();
         }
 
     }

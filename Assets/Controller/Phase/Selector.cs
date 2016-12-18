@@ -22,51 +22,60 @@ namespace Assets.Controller.Phase
         public SelectorItem[] SelectableItems;
 
         private int selectionIndex = 0;
+        public int SelectionIndex {
+            get
+            {
+                return selectionIndex;
+            }
+        }
         private int lastSelection = 0;
         private float stayontime;
 
         public void Awake()
         {
-            GetItems(gameObject.GetComponentsInChildren<Atom>(false));
+            GetItems(gameObject.GetComponentsInChildren<SelectorActor>(false));
             doSelection();
         }
 
-        public void GetItems (Atom[] data)
+        public void GetItems (SelectorActor[] data)
         {
             foreach (var item in data)
             {
-                    if (item != null && item.gameObject != gameObject)
-                    {
-                        SelectorItem si = new SelectorItem();
-                        si.Phase = item;
+                AddActor(item);
+            }
+        }
 
-                        SelectorActor sa = item.GetComponent<SelectorActor>();
-                        if (sa != null)
-                        {
-                            si.OnActivated = new UnityEvent();
-                            si.OnActivated.AddListener(new UnityAction(sa.Activate));
+        public void AddActor (SelectorActor data)
+        {
+            Phase item = data.GetComponent<Phase>();
 
-                            si.OnSelected = new UnityEvent();
-                            si.OnSelected.AddListener(new UnityAction(sa.Select));
+            if (item != null && item.gameObject != gameObject)
+            {
+                SelectorItem si = new SelectorItem();
+                si.Phase = item;
+                item.Controller = base.Controller;
 
-                            si.OnDeselected = new UnityEvent();
-                            si.OnDeselected.AddListener(new UnityAction(sa.Deselect));
-                        }
+                SelectorActor sa = item.GetComponent<SelectorActor>();
+                if (sa != null)
+                {
+                    si.OnActivated = new UnityEvent();
+                    si.OnActivated.AddListener(new UnityAction(sa.Activate));
 
-                        Collider co = item.GetComponent<Collider>();
-                        if (co != null)
-                        {
-                            si.MouseCollider = co; 
-                        }
+                    si.OnSelected = new UnityEvent();
+                    si.OnSelected.AddListener(new UnityAction(sa.Select));
 
-                        Array.Resize(ref SelectableItems, SelectableItems.Length + 1);
-                        SelectableItems[SelectableItems.Length-1] = si;
-                    }
+                    si.OnDeselected = new UnityEvent();
+                    si.OnDeselected.AddListener(new UnityAction(sa.Deselect));
+                }
 
+                Collider co = item.GetComponent<Collider>();
+                if (co != null)
+                {
+                    si.MouseCollider = co;
+                }
 
-                
-
-
+                Array.Resize(ref SelectableItems, SelectableItems.Length + 1);
+                SelectableItems[SelectableItems.Length - 1] = si;
             }
         }
 
@@ -192,23 +201,27 @@ namespace Assets.Controller.Phase
 
         private void doSelection()
         {
-            Debug.Log(selectionIndex);
-            var s = SelectableItems[selectionIndex];
-            if (s != null)
+            if (IsRunning && SelectableItems.Length > 0)
             {
-                if (s.OnDeselected != null)
+                Debug.Log(selectionIndex);
+                var s = SelectableItems[selectionIndex];
+                if (s != null)
                 {
-                    SelectableItems[lastSelection].OnDeselected.Invoke();
-                }
+                    if (s.OnDeselected != null)
+                    {
+                        SelectableItems[lastSelection].OnDeselected.Invoke();
+                    }
 
-                if (s.OnSelected != null)
-                {
-                    SelectableItems[selectionIndex].OnSelected.Invoke();
+                    if (s.OnSelected != null)
+                    {
+                        SelectableItems[selectionIndex].OnSelected.Invoke();
+                    }
                 }
             }
+            
         }
 
-        public void Activate()
+        public virtual void Activate()
         {
             var s = SelectableItems[selectionIndex];
             if (s != null && IsRunning)

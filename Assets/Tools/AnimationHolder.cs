@@ -13,8 +13,7 @@ namespace Assets.Tools
     {
         public string Name;
         public Animation Animation;
-        public float Delay = 0;
-        
+        public float Delay = 0; 
     }
 
     public class AnimationHolder : MonoBehaviour

@@ -11,14 +11,6 @@ namespace Assets.Service
 
         public string Name { get; private set; }
         public string WebAdress { get; private set; }
-        private int numReconnections = 0;
-        public int NumReconnections
-        {
-            get
-            {
-                return numReconnections;
-            }
-        }
 
         public WWW downloadData { get; private set; }
         public bool Disposed { get; private set; }
@@ -78,7 +70,6 @@ namespace Assets.Service
             {
                 downloadData.Dispose();
                 downloadData = null;
-                numReconnections++;
             }
             Disposed = false;
             downloadData = new WWW(WebAdress);

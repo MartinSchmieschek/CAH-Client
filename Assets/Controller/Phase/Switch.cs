@@ -9,11 +9,6 @@ namespace Assets.Controller.Phase
     {
         public Atom[] Phases;
 
-        public Switch()
-        {
-
-        }
-
         public void SwitchTo(int id)
         {
             if (Phases.Length > id)

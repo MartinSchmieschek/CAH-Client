@@ -4,11 +4,12 @@ using UnityEngine;
 
 namespace Assets.Controller.Phase
 {
-    [RequireComponent(typeof(Collider))]
+    [RequireComponent(typeof(Phase))]
     public class SelectorActor : MonoBehaviour
     {
 
         public Animator animator;
+        public float DestroyDelay = 2f;
 
         private void getAnimator()
         {
@@ -25,9 +26,9 @@ namespace Assets.Controller.Phase
             animator.SetTrigger("spawn");
         }
 
-        public void OnDestroy()
+        public void Kill()
         {
-            animator.SetTrigger("kill");
+            StartCoroutine(delayedDestroy());
         }
 
         public void Activate()
@@ -45,6 +46,13 @@ namespace Assets.Controller.Phase
         {
             getAnimator();
             animator.SetBool("selected", false);
+        }
+
+        private IEnumerator delayedDestroy ()
+        {
+            animator.SetTrigger("kill");
+            yield return new WaitForSeconds(DestroyDelay);
+            Destroy(gameObject);
         }
     }
 

@@ -13,5 +13,10 @@ public class PeristentGameProperties : MonoBehaviour
     public string UserName;
     public string Token;
     public int GameId;
+
+    public void SetGameId (int value)
+    {
+        GameId = value;
+    }
 }
 

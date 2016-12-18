@@ -11,18 +11,19 @@ using System;
 public class LobbySelector : Selector {
 
     private LobbyLoader lobbyLoader;
-    public Card ItemPrefab;
+    public SelectorActor ItemPrefab;
     public int NumRowItems = 5;
     public float ItemDistance = 1.2f;
     public int NumRows = 2;
     public float RowDistance = 2f;
+    public Atom JoinLobbyPhase;
 
-    private List<SelectorItem> CreatedItems = new List<SelectorItem>();
-    private List<Card> CreatedVisuals = new List<Card>();
+    private List<SelectorActor> CreatedItems = new List<SelectorActor>();
+    private List<Lobby> shownLobbys = new List<Lobby>();
 
     private int currentStartId = 0;
 
-    void Awake()
+    void Start()
     {
         lobbyLoader = GetComponent<LobbyLoader>();
         if (lobbyLoader == null)
@@ -69,14 +70,13 @@ public class LobbySelector : Selector {
     {
         if (CreatedItems.Count > 0)
         {
-
+            foreach (var item in CreatedItems)
+                item.Kill();
         }
 
-        if (CreatedVisuals.Count > 0)
-        {
-            foreach (var item in CreatedVisuals)
-                Destroy(item);
-        }
+        CreatedItems = new List<SelectorActor>();
+        base.SelectableItems = new SelectorItem[]{ };
+        shownLobbys = new List<Lobby>();
     }
 
     public override IEnumerator PhaseIteration(Atom previewesPhase)
@@ -108,7 +108,7 @@ public class LobbySelector : Selector {
             {
                 if (tmpLobbys.Count > (currentStartId + x + y))
                 {
-                    CreateLobbyCard(grid.GetAtXY(x, y), transform.localScale, transform.localRotation * Quaternion.Euler(-90,0,0), tmpLobbys[currentStartId + x + y]);
+                    CreateLobbyCard(grid.GetAtXY(x, y), transform.localScale, transform.localRotation * Quaternion.Euler(90,180,0), tmpLobbys[currentStartId + x + y]);
                 }
             }
         }
@@ -118,24 +118,40 @@ public class LobbySelector : Selector {
     {
         if (ItemPrefab != null)
         {
-            Card card = Instantiate(ItemPrefab);
-            card.transform.SetParent(transform);
+            SelectorActor sa = Instantiate(ItemPrefab);
+            sa.transform.SetParent(transform);
+            sa.transform.position = pos;
+            sa.transform.localScale = scale;
+            sa.transform.rotation = rot;
 
-            card.CardText = String.Format("Name:\n{0}\n\nPlayers:{1}/{2}\nTarget Score:{3}\nLast Activity:{4}minutes ago", 
-                lobby.game_name,lobby.user_count,lobby.max_players,lobby.target_score,(DateTime.Now - lobby.last_activity).TotalMinutes);
-            card.transform.position = pos;
-            card.transform.localScale = scale;
-            card.transform.rotation = rot;
-            CreatedVisuals.Add(card);
+            Phase ph = sa.gameObject.GetComponent<Phase>();
+            ph.NextPhase = JoinLobbyPhase;
 
-            SceneJump ph = card.gameObject.AddComponent<SceneJump>();
+            Card card = sa.GetComponentInChildren<Card>();
+            if (card != null)
+            {
+                card.CardText = String.Format("Name:\n{0}\n\nPlayers:{1}/{2}\nTarget Score:{3}\nLast Activity:{4}minutes ago",
+                lobby.game_name, lobby.user_count, lobby.max_players, lobby.target_score, (DateTime.Now - lobby.last_activity).TotalMinutes);
+            }
 
-            SelectorItem item = new SelectorItem();
-            item.MouseCollider = card.GetComponent<Collider>();
-            item.Phase = ph;
-            CreatedItems.Add(item);
+            CreatedItems.Add(sa);
+            base.AddActor(sa);
+            shownLobbys.Add(lobby);
+
+            //SceneJump ph = card.gameObject.AddComponent<SceneJump>();
+
+            //SelectorItem item = new SelectorItem();
+            //item.MouseCollider = card.GetComponent<Collider>();
+            //item.Phase = ph;
+            //CreatedItems.Add(item);
 
         }
+    }
+
+    public override void Activate()
+    {
+        base.Activate();
+        lobbyLoader.GameProperties.GameId = shownLobbys[base.SelectionIndex].game_id;
     }
 
 }

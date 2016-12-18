@@ -15,7 +15,5 @@ namespace Assets.Controller.Phase
         public UnityEvent OnDeselected;
         public UnityEvent OnActivated;
         public Collider MouseCollider;
-
-
     }
 }
