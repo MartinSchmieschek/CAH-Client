@@ -15,13 +15,14 @@ namespace Assets.Service
     public class LobbyCreator : APIBase
     {
 
-        public string GameName = "";
+        public string GameName { get; set;}
         public UnityEvent OnSucces;
         private JSONFromWeb data;
+        bool isCreating = false;
 
         public void CreateLobby()
         {
-            if (!string.IsNullOrEmpty(GameName))
+            if (!string.IsNullOrEmpty(GameName) && !isCreating)
             {
                 Token dat = new Token()
                 {
@@ -36,16 +37,18 @@ namespace Assets.Service
                 };
 
                 data = new JSONFromWeb("CreateLobby", GameProperties.GameServer + @"/lobby/create-lobby", new Token[] { dat, nam }, typeof(CreateLobbyResponse));
-                data.OnFail += (new UnityAction(this.connectionFailed));
-                data.OnSuccess += (new UnityAction(this.connectionFailed));
+                data.OnFail += (new UnityAction(this.onCreationFailed));
+                data.OnSuccess += (new UnityAction(this.onCreationSucceded));
                 GameProperties.WebLoader.AddDownload(data);
+
+                isCreating = true;
             }
             else
                 base.Error = "No Game name assigned";
 
         }
 
-        private void connectionSucceeded()
+        private void onCreationSucceded()
         {
             if (data.IsDone)
             {
@@ -53,8 +56,12 @@ namespace Assets.Service
                 if (result.success)
                 {
                     base.GameProperties.GameId = result.game_id;
+
+                    isCreating = false;
                     if (OnSucces != null)
                         OnSucces.Invoke();
+
+                    
                 }
                 else
                 {
@@ -64,9 +71,10 @@ namespace Assets.Service
 
         }
 
-        private void connectionFailed()
+        private void onCreationFailed()
         {
             Error = "Connection failed";
+            isCreating = false;
         }
 
 

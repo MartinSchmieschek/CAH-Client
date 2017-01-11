@@ -19,7 +19,7 @@ public class LobbySelector : Selector {
     public Atom JoinLobbyPhase;
 
     private List<SelectorActor> CreatedItems = new List<SelectorActor>();
-    private List<Lobby> shownLobbys = new List<Lobby>();
+    private List<LobbyInfo> shownLobbys = new List<LobbyInfo>();
 
     private int currentStartId = 0;
 
@@ -44,7 +44,7 @@ public class LobbySelector : Selector {
     public void ScrollListForward()
     {
         if (IsRunning)
-            if (currentStartId + (NumRowItems* NumRows) < lobbyLoader.OpenLobbies.Count)
+            if (currentStartId < lobbyLoader.OpenLobbies.Count)
             {
                 currentStartId++;
                 UpdateLobbyItems();
@@ -76,7 +76,7 @@ public class LobbySelector : Selector {
 
         CreatedItems = new List<SelectorActor>();
         base.SelectableItems = new SelectorItem[]{ };
-        shownLobbys = new List<Lobby>();
+        shownLobbys = new List<LobbyInfo>();
     }
 
     public override IEnumerator PhaseIteration(Atom previewesPhase)
@@ -114,7 +114,7 @@ public class LobbySelector : Selector {
         }
     }
 
-    private void CreateLobbyCard(Vector3 pos, Vector3 scale, Quaternion rot,Lobby lobby)
+    private void CreateLobbyCard(Vector3 pos, Vector3 scale, Quaternion rot,LobbyInfo lobby)
     {
         if (ItemPrefab != null)
         {
@@ -138,19 +138,13 @@ public class LobbySelector : Selector {
             base.AddActor(sa);
             shownLobbys.Add(lobby);
 
-            //SceneJump ph = card.gameObject.AddComponent<SceneJump>();
-
-            //SelectorItem item = new SelectorItem();
-            //item.MouseCollider = card.GetComponent<Collider>();
-            //item.Phase = ph;
-            //CreatedItems.Add(item);
-
         }
     }
 
     public override void Activate()
     {
         base.Activate();
+        lobbyLoader.StopObserving();
         lobbyLoader.GameProperties.GameId = shownLobbys[base.SelectionIndex].game_id;
     }
 

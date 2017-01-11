@@ -19,7 +19,7 @@ namespace Assets.Service
         {
             JSONType = type;
         }
-        public JSONFromWeb(string name, string webadress, Token token, Type type) : base(name, webadress + token.Get())
+        public JSONFromWeb(string name, string webadress, Token token, Type type) : base(name, webadress + token.GetAsFirst())
         {
             JSONType = type;
         }
@@ -53,10 +53,18 @@ namespace Assets.Service
 
         private static string proceedToken(Token[] to)
         {
+            bool firstDone = false;
             string tmp = "";
             foreach (var toval in to)
             {
-                tmp += toval;
+                if (!firstDone)
+                {
+                    tmp += toval.GetAsFirst();
+                    firstDone = true;
+                }
+                else
+                    tmp += toval.Get();
+
             }
             return tmp;
         }

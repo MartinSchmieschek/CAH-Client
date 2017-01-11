@@ -53,6 +53,7 @@ namespace Assets.Service
 
         private void ErrorMessage(string em)
         {
+            // should be a errorscrren
             throw new System.Exception("CAH API Error:" + em);
         }
     }

@@ -35,7 +35,7 @@ namespace Assets.Controller.Phase
             yield return null;
         }
 
-        public void Quit ()
+        public virtual void Quit ()
         {
             isrunning = false;
         }

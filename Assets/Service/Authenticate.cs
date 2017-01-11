@@ -33,6 +33,7 @@ namespace Assets.Service
                 data = new JSONFromWeb("Authenticate", base.GameProperties.GameServer + @"/lobby/authenticate", dat, typeof(AutenticateResponse));
                 data.OnSuccess += new UnityAction(connectionSucceeded);
                 data.OnFail += new UnityAction(connectionFailed);
+                
                 GameProperties.WebLoader.AddDownload(data);
             }
             else

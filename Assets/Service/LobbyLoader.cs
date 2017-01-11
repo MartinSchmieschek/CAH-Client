@@ -35,13 +35,13 @@ namespace Assets.Service
         private JSONFromWeb currentLobbieLoad;
 
         public string NameFilter { get; set; }
-        public List<Lobby> OpenLobbies
+        public List<LobbyInfo> OpenLobbies
         {
             get
             {
                 if (Connected && IsObserving)
                 {
-                    var tmp = new List<Lobby>();
+                    var tmp = new List<LobbyInfo>();
                     foreach (var l in lobbies.lobbies)
                         if (l.state == LobbyState.STATE_INLOBBY && l.user_count < l.max_players)
                         {

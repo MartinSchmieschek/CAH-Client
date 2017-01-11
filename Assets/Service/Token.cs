@@ -10,11 +10,23 @@ namespace Assets.Service
         public string Name;
         public string Value;
 
-        public string Get()
+        public string GetAsFirst()
         {
             if (!String.IsNullOrEmpty(Name) && !String.IsNullOrEmpty(Value))
             {
                 return String.Format("?{0}={1}", Name, Value);
+            }
+            else
+            {
+                return "";
+            }
+        }
+
+        public string Get()
+        {
+            if (!String.IsNullOrEmpty(Name) && !String.IsNullOrEmpty(Value))
+            {
+                return String.Format("&{0}={1}", Name, Value);
             }
             else
             {

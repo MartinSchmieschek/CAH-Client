@@ -5,7 +5,7 @@ using UnityEngine.Events;
 
 namespace Assets.Controller.Phase
 {
-    public class Switch : Phase
+    public class Switch : Atom
     {
         public Atom[] Phases;
 
@@ -15,11 +15,6 @@ namespace Assets.Controller.Phase
                 Controller.StartPhase(Phases[id]);
             else
                 Debug.Log("Index out of range!");
-        }
-
-        private void DoPhase(Atom nextPhase)
-        {
-            Controller.StartPhase(nextPhase);
         }
     }
 }

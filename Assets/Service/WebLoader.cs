@@ -76,22 +76,24 @@ namespace Assets.Service
                 // remove Failed Loads
                 if (!string.IsNullOrEmpty(nextDload.Error))
                 {
+                    failed.Add(nextDload);
+                    downloads.Remove(nextDload);
+
                     if (nextDload.OnFail != null)
                         nextDload.OnFail.Invoke();
 
-                    failed.Add(nextDload);
-                    downloads.Remove(nextDload);
                     return;
                 }
 
                 // remove done dloads
                 if (nextDload.IsDone && string.IsNullOrEmpty(nextDload.Error))
                 {
+                    done.Add(nextDload);
+                    downloads.Remove(nextDload);
+
                     if (nextDload.OnSuccess != null)
                         nextDload.OnSuccess.Invoke();
 
-                    done.Add(nextDload);
-                    downloads.Remove(nextDload);
                     return;
                 }
 

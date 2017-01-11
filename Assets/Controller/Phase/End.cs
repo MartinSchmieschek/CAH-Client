@@ -5,37 +5,22 @@ using UnityEngine.Events;
 
 namespace Assets.Controller.Phase
 {
-    public class Phase : Atom
+    public class End : Atom
     {
-        
+
         public UnityEvent OnActivate;
         public UnityEvent OnDeactivate;
 
-        public Atom NextPhase;
-
-        public Phase ()
-        {
-            this.NextPhase = null;
-        }
-
-        public virtual void DoNextPhase ()
-        {
-           Controller.StartPhase(NextPhase);
-        }
-
         public override IEnumerator PhaseIteration(Atom previewesPhase)
         {
-            Debug.Log(String.Format("Start Phase:{0}", gameObject.name.ToString()));
-
             if (OnActivate != null)
                 OnActivate.Invoke();
 
+            Debug.Log(String.Format("Start Phase:{0}", this.gameObject.name.ToString()));
             while (IsRunning)
             {
                 new WaitForSeconds(Controller.UpdateTimming);
-                // do your phase depending stuff here
-                Debug.Log(String.Format("Running Phase:{0}", gameObject.name.ToString()));
-                //
+                Debug.Log(String.Format("EndPhaseRunning!"));
                 yield return null;
             }
 
@@ -44,9 +29,9 @@ namespace Assets.Controller.Phase
             if (OnDeactivate != null)
                 OnDeactivate.Invoke();
 
-            DoNextPhase();
+
 
             yield return null;
-        } 
+        }
     }
 }
