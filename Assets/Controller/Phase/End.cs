@@ -20,7 +20,7 @@ namespace Assets.Controller.Phase
             while (IsRunning)
             {
                 new WaitForSeconds(Controller.UpdateTimming);
-                Debug.Log(String.Format("EndPhaseRunning!"));
+                Debug.Log(String.Format("EndPhaseRunning!:" + this.gameObject.name.ToString()));
                 yield return null;
             }
 
