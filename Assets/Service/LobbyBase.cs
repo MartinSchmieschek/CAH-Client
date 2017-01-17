@@ -17,22 +17,17 @@ namespace Assets.Service
        
         public JSONFromWeb lobbyWebload;
         public bool IsObserving = false;
-        public Lobby CurrentLobby;
+        public Response.Lobby CurrentLobby;
 
-        public string LobbyText {
+        public string LobbyTitle {
             get
             {
                 if (CurrentLobby.success)
                 {
-      //              string players = "";
-    //                foreach (var item in CurrentLobby.players.)
-  //                  {
-//
-             //       }
-                    return string.Format("GameName:{0}/n", CurrentLobby.settings.game_name)
+                    return string.Format("GameName:{0}/n", CurrentLobby.settings.game_name);
                 }
 
-                return "not joined in lobby.";
+                return "no lobby.";
             }
         }
 
@@ -46,7 +41,7 @@ namespace Assets.Service
                     Value = base.GameProperties.GameId.ToString(),
                 };
 
-                lobbyWebload = new JSONFromWeb("GetLobbyState", base.GameProperties.GameServer + @"/lobby/get-lobby-state", gid, typeof(Lobby));
+                lobbyWebload = new JSONFromWeb("GetLobbyState", base.GameProperties.GameServer + @"/lobby/get-lobby-state", gid, typeof(Response.Lobby));
                 lobbyWebload.OnSuccess += new UnityAction(onLobbyUpdateWebloadSucceded);
                 lobbyWebload.OnFail += new UnityAction(onLobbyUpdateWebloadFail);
 
@@ -60,9 +55,9 @@ namespace Assets.Service
 
         private void onLobbyUpdateWebloadSucceded()
         {
-            if (((Lobby)lobbyWebload.Result).success)
+            if (((Response.Lobby)lobbyWebload.Result).success)
             {
-                CurrentLobby = (Lobby)lobbyWebload.Result;
+                CurrentLobby = (Response.Lobby)lobbyWebload.Result;
                 IsObserving = true;
             }
             else
@@ -113,8 +108,5 @@ namespace Assets.Service
             if (OnGameStart != null)
                 OnGameStart.Invoke();
         }
-
-
-
     }
 }

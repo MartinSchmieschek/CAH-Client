@@ -7,17 +7,9 @@ using UnityEngine.Events;
 
 namespace Assets.Service
 {
-    public struct JoinLobbyResponse
-    {
-        public bool success;
-        public string[] errors;
-    }
-
-
 
     public class LobbyJoin : LobbyBase
     {
-
         private JSONFromWeb lobbyjoin;
         public UnityEvent OnJoin;
 
@@ -46,7 +38,7 @@ namespace Assets.Service
 
                 Token[] dat = new Token[2] { ct, gi };
 
-                lobbyjoin = new JSONFromWeb("JoinLobby", base.GameProperties.GameServer + @"/lobby/join-lobby", dat, typeof(JoinLobbyResponse));
+                lobbyjoin = new JSONFromWeb("JoinLobby", base.GameProperties.GameServer + @"/lobby/join-lobby", dat, typeof(Response.LobbyJoin));
                 lobbyjoin.OnSuccess += new UnityAction(onJoinLobbySucceeded);
                 lobbyjoin.OnFail += new UnityAction(onJoinLobbyFailed);
 
@@ -61,7 +53,7 @@ namespace Assets.Service
 
         private void onJoinLobbySucceeded()
         {
-            if (lobbyjoin.IsDone && ((JoinLobbyResponse)lobbyjoin.Result).success )
+            if (lobbyjoin.IsDone && ((Response.LobbyJoin)lobbyjoin.Result).success )
             {
                 IsObserving = true;
                 tryToJoin = false;
@@ -83,6 +75,7 @@ namespace Assets.Service
             joined = false;
             IsObserving = false;
             base.Error = "Connection failed";
+            base.Leave();
         }
 
         private void lobbyStateTest()
@@ -95,7 +88,7 @@ namespace Assets.Service
                         break;
                     case LobbyState.STATE_STARTED:
                         {
-                            startGame();
+                            base.startGame();
                         }
                         break;
                     case LobbyState.STATE_FINISHED:
@@ -110,8 +103,5 @@ namespace Assets.Service
                 }
             }
         }
-
-
-        
     }
 }

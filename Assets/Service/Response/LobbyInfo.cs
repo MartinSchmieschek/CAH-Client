@@ -5,7 +5,7 @@ using System.Text;
 using UnityEngine;
 using UnityEngine.Serialization;
 
-namespace Assets.Service
+namespace Assets.Service.Response
 {
     [Serializable]
     public struct LobbyInfo

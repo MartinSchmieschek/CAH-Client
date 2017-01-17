@@ -3,15 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using Assets.Service;
 using UnityEngine.Events;
+using Assets.Service.Response;
 
 namespace Assets.Service
 {
-    public struct CreateLobbyResponse
-    {
-        public bool success;
-        public int game_id;
-    }
-
     public class LobbyCreator : APIBase
     {
 
@@ -36,7 +31,7 @@ namespace Assets.Service
                     Value = GameName,
                 };
 
-                data = new JSONFromWeb("CreateLobby", GameProperties.GameServer + @"/lobby/create-lobby", new Token[] { dat, nam }, typeof(CreateLobbyResponse));
+                data = new JSONFromWeb("CreateLobby", GameProperties.GameServer + @"/lobby/create-lobby", new Token[] { dat, nam }, typeof(Response.LobbyCreate));
                 data.OnFail += (new UnityAction(this.onCreationFailed));
                 data.OnSuccess += (new UnityAction(this.onCreationSucceded));
                 GameProperties.WebLoader.AddDownload(data);
@@ -52,7 +47,7 @@ namespace Assets.Service
         {
             if (data.IsDone)
             {
-                CreateLobbyResponse result = (CreateLobbyResponse)data.Result;
+                Response.LobbyCreate result = (Response.LobbyCreate)data.Result;
                 if (result.success)
                 {
                     base.GameProperties.GameId = result.game_id;

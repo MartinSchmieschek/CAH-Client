@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Assets.Service
+namespace Assets.Service.Response
 {
-    [Serializable]
-    public struct CAHPlayer
+    public class ResponseBase
     {
+        public bool success;
     }
 }

@@ -31,17 +31,17 @@ namespace Assets.Service
 
         private float refeshTimer;
 
-        private Lobbies lobbies;
+        private Response.Lobbies lobbies;
         private JSONFromWeb currentLobbieLoad;
 
         public string NameFilter { get; set; }
-        public List<LobbyInfo> OpenLobbies
+        public List<Response.LobbyInfo> OpenLobbies
         {
             get
             {
                 if (Connected && IsObserving)
                 {
-                    var tmp = new List<LobbyInfo>();
+                    var tmp = new List<Response.LobbyInfo>();
                     foreach (var l in lobbies.lobbies)
                         if (l.state == LobbyState.STATE_INLOBBY && l.user_count < l.max_players)
                         {
@@ -80,7 +80,7 @@ namespace Assets.Service
 
         private void getLobbies()
         {
-            currentLobbieLoad = new JSONFromWeb("GetLobbies", base.GameProperties.GameServer + @"/lobby/get-lobbies", typeof(Lobbies));
+            currentLobbieLoad = new JSONFromWeb("GetLobbies", base.GameProperties.GameServer + @"/lobby/get-lobbies", typeof(Response.Lobbies));
             base.GameProperties.WebLoader.AddDownload(currentLobbieLoad);
         }
 
@@ -90,7 +90,7 @@ namespace Assets.Service
             {
                 if (currentLobbieLoad.IsDone && string.IsNullOrEmpty(currentLobbieLoad.Error))
                 {
-                    lobbies = (Lobbies)currentLobbieLoad.Result;
+                    lobbies = (Response.Lobbies)currentLobbieLoad.Result;
                     if (lobbies.success)
                     {
                         if (OnRefreshed != null)

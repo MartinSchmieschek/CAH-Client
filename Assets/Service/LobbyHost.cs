@@ -4,15 +4,10 @@ using Assets.Service;
 using System.Collections.Generic;
 using System;
 using UnityEngine.Events;
+using Assets.Service.Response;
 
 namespace Assets.Service
 {
-
-    public struct StartGameResponse
-    {
-        public bool success;
-    }
-
     public class LobbyHost : LobbyBase
     {
         private JSONFromWeb startGameWebload;
@@ -34,7 +29,7 @@ namespace Assets.Service
                     Value = base.GameProperties.Token.ToString()
                 };
 
-                startGameWebload = new JSONFromWeb("GetLobbyState", base.GameProperties.GameServer + @"/lobby/start-game", new Token[] {gid,ct}, typeof(StartGameResponse));
+                startGameWebload = new JSONFromWeb("GetLobbyState", base.GameProperties.GameServer + @"/lobby/start-game", new Token[] {gid,ct}, typeof(Response.StartGame));
                 startGameWebload.OnSuccess += new UnityAction(onGameStartedWebloadSucceded);
                 startGameWebload.OnFail += new UnityAction(onGameStartedWebloadFailed);
 
@@ -48,7 +43,7 @@ namespace Assets.Service
 
         private void onGameStartedWebloadSucceded ()
         {
-            if (((StartGameResponse)startGameWebload.Result).success)
+            if (((Response.StartGame)startGameWebload.Result).success)
             {
                 tryToStart = false;
                 base.IsObserving = false;

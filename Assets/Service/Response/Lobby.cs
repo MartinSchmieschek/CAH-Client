@@ -5,12 +5,11 @@ using System.Text;
 using UnityEngine;
 using UnityEngine.Serialization;
 
-namespace Assets.Service
+namespace Assets.Service.Response
 {
     [Serializable]
-    public struct Lobby
+    public class Lobby : ResponseBase
     {
-        public bool success;
         public LobbyInfo settings;
         public CAHPlayer[] players;
     }

@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using Assets.Tools;
 using UnityEngine.Events;
 using System;
+using Assets.Service.Response;
 
 [RequireComponent(typeof(LobbyLoader))]
 public class LobbySelector : Selector {

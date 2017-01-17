@@ -4,15 +4,10 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 using UnityEngine.Events;
+using Assets.Service.Response;
 
 namespace Assets.Service
 {
-    struct AutenticateResponse
-    {
-        public bool success;
-        public string clientToken;
-    }
-
     public class Authenticate : APIBase
     {
         public UnityEvent OnSucces;
@@ -30,7 +25,7 @@ namespace Assets.Service
                     Value = UserName,
                 };
 
-                data = new JSONFromWeb("Authenticate", base.GameProperties.GameServer + @"/lobby/authenticate", dat, typeof(AutenticateResponse));
+                data = new JSONFromWeb("Authenticate", base.GameProperties.GameServer + @"/lobby/authenticate", dat, typeof(Response.Authenticate));
                 data.OnSuccess += new UnityAction(connectionSucceeded);
                 data.OnFail += new UnityAction(connectionFailed);
                 
@@ -47,7 +42,7 @@ namespace Assets.Service
         {
             if (data.IsDone)
             {
-                AutenticateResponse result = (AutenticateResponse)data.Result;
+                Response.Authenticate result = (Response.Authenticate)data.Result;
                 if (result.success)
                 {
                     GameProperties.UserName = UserName;
