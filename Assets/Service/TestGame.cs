@@ -4,9 +4,13 @@ using System.Linq;
 using System.Text;
 using UnityEngine.Events;
 
+
+/// <summary>
+/// testkalsse für die Api und Communication mit server. Dies wird nicht im Programm genutzt siehe Game.GameRound
+/// </summary>
 namespace Assets.Service
 {
-    class Game : APIBase
+    class TestGame : APIBase
     {
         private JSONFromWeb playCardWebLoad;
 

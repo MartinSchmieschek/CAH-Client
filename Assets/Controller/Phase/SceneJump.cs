@@ -5,11 +5,11 @@ using System.Text;
 
 namespace Assets.Controller.Phase
 {
-    public class SceneJump : Atom
+    public class SceneJump : Phase
     {
         public string Scene;
 
-        public override void Tick(Atom triggerPhase)
+        public override void Tick(Phase triggerPhase)
         {
             UnityEngine.SceneManagement.SceneManager.LoadScene(Scene);
         }

@@ -10,7 +10,7 @@ namespace Assets.Controller.Phase
     [Serializable]
     public class SelectorItem
     {
-        public Atom Phase = null;
+        public Phase Phase = null;
         public UnityEvent OnSelected;
         public UnityEvent OnDeselected;
         public UnityEvent OnActivated;

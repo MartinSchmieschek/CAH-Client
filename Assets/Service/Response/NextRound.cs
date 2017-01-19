@@ -5,6 +5,7 @@ using System.Text;
 
 namespace Assets.Service.Response
 {
+    [Serializable]
     class NextRound : ResponseBase
     {
         public LobbyState state;

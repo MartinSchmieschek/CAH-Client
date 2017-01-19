@@ -11,35 +11,20 @@ namespace Assets.Service
     {
         public float AutoRefeshTime = 30;
         public bool IsObserving { get; private set; }
-        public bool Connected
-        {
-            get
-            {
-                if (!IsObserving)
-                {
-                    Debug.Log("There is no observing activated !");
-                    return false;
-                }
-                if (currentLobbieLoad.IsDone && string.IsNullOrEmpty(currentLobbieLoad.Error) && lobbies.success)
-                    return true;
 
-                return false;
-            }
-        }
+        private bool isUpdating = false;
 
         public UnityAction OnRefreshed;
 
-        private float refeshTimer;
-
         private Response.Lobbies lobbies;
-        private JSONFromWeb currentLobbieLoad;
+        
 
         public string NameFilter { get; set; }
         public List<Response.LobbyInfo> OpenLobbies
         {
             get
             {
-                if (Connected && IsObserving)
+                if (lobbies != null)
                 {
                     var tmp = new List<Response.LobbyInfo>();
                     foreach (var l in lobbies.lobbies)
@@ -73,80 +58,39 @@ namespace Assets.Service
             return matchcounter;
         }
 
-        public void Start()
-        {
-            IsObserving = false;
-        }
-
+        private JSONFromWeb currentLobbieLoad;
         private void getLobbies()
         {
-            currentLobbieLoad = new JSONFromWeb("GetLobbies", base.GameProperties.GameServer + @"/lobby/get-lobbies", typeof(Response.Lobbies));
-            base.GameProperties.WebLoader.AddDownload(currentLobbieLoad);
-        }
+            if (!isUpdating)
+            {
+                isUpdating = true;
+                currentLobbieLoad = new JSONFromWeb("GetLobbies", base.GameProperties.GameServer + @"/lobby/get-lobbies", typeof(Response.Lobbies));
+                currentLobbieLoad.OnSuccess += new UnityAction(currentLobbieLoadSucceded);
+                currentLobbieLoad.OnFail += new UnityAction(currentLobbieLoadFailed);
 
-        private void processLobbyData()
+                base.GameProperties.WebLoader.AddDownload(currentLobbieLoad);
+            }
+        }
+        private void currentLobbieLoadSucceded()
         {
-            if (currentLobbieLoad != null)
+            if ( ((Response.Lobbies)currentLobbieLoad.Result).success )
             {
-                if (currentLobbieLoad.IsDone && string.IsNullOrEmpty(currentLobbieLoad.Error))
-                {
-                    lobbies = (Response.Lobbies)currentLobbieLoad.Result;
-                    if (lobbies.success)
-                    {
-                        if (OnRefreshed != null)
-                            OnRefreshed.Invoke();
-                        Debug.Log("Found " + lobbies.lobbies.Length + " Lobbies");
-                    }
-                        
-                }
-                else
-                {
-                    Debug.Log("Loading Lobbies:" + currentLobbieLoad.Progress + "%");
-                    if (String.IsNullOrEmpty(currentLobbieLoad.Error))
-                    {
-                        Debug.Log("Error:" + currentLobbieLoad.Error);
-                    }
-                    
-                }
-            }
-            else
-            {
-                Debug.Log("LobbyDownload not added");
-            }
+                lobbies = ((Response.Lobbies)currentLobbieLoad.Result);
+                if (OnRefreshed != null)
+                    OnRefreshed.Invoke();
+                Debug.Log("Found " + lobbies.lobbies.Length + " Lobbies");
+                isUpdating = false;
+            }  
+        }
+        private void currentLobbieLoadFailed()
+        {
+            base.Error = "Connection failed:" + currentLobbieLoad.Error;
+            isUpdating = false;
         }
 
         public void Refresh()
         {
             getLobbies();
-            refeshTimer = 0;
-        }
-
-        public void StartObserving()
-        {
-            if (!IsObserving)
-            {
-                IsObserving = true;
-                Refresh();
-            }
-        }
-
-        public void StopObserving()
-        {
-            if (IsObserving)
-                IsObserving = false;
-        }
-
-        public void Update()
-        {
-            if (IsObserving)
-            {
-                refeshTimer += Time.deltaTime;
-                if (refeshTimer > AutoRefeshTime)
-                {
-                    Refresh();
-                }
-            }
-            processLobbyData();
         }
     }
 }

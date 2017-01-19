@@ -5,9 +5,9 @@ using UnityEngine.Events;
 
 namespace Assets.Controller.Phase
 {
-    public class Switch : Atom
+    public class Switch : Phase
     {
-        public Atom[] Phases;
+        public Phase[] Phases;
 
         public void SwitchTo(int id)
         {

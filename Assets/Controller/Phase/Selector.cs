@@ -7,9 +7,9 @@ using UnityEngine.Events;
 namespace Assets.Controller.Phase
 {
 
-    public class Selector : Atom
+    public class Selector : Phase
     {
-        public Atom ScreenSaverPhase;
+        public Phase ScreenSaverPhase;
         public float MaxStayOnTime = 10f;
         public bool MouseInteraction = true;
         public LayerMask Layer;
@@ -85,6 +85,8 @@ namespace Assets.Controller.Phase
             ScreenSaverPhase = null;
         }
 
+
+        // sollte in ein event system verschoiben werden
         private void MouseInput()
         {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -98,7 +100,7 @@ namespace Assets.Controller.Phase
                     {
                         if (SelectableItems[i].MouseCollider != null && SelectableItems[i].MouseCollider.Equals(hit.collider))
                         {
-                            //if (selectionIndex != i)
+                            if (selectionIndex != i)
                                 SelectByID(i);
 
                             if (Input.GetMouseButtonDown(0))
@@ -120,6 +122,7 @@ namespace Assets.Controller.Phase
             if (Input.GetKeyDown(PreviewsKey))
                 SelectLast();
         }
+        //
 
         public void FixedUpdate()
         {
@@ -136,13 +139,11 @@ namespace Assets.Controller.Phase
 
         }
 
-        public override IEnumerator PhaseIteration(Atom previewesPhase)
+        public override IEnumerator PhaseIteration(Phase previewesPhase)
         {
-            Debug.Log(String.Format("Start Phase:{0}", gameObject.name.ToString()));
-
             while (IsRunning)
             {
-                Debug.Log(String.Format("Running Phase:{0}", gameObject.name.ToString()));
+                Debug.Log(String.Format("Running Selector:{0}", gameObject.name.ToString()));
 
                 new WaitForSeconds(Controller.UpdateTimming);
                 stayontime += Time.deltaTime;
@@ -155,8 +156,6 @@ namespace Assets.Controller.Phase
 
                 yield return null;
             }
-
-            Debug.Log(String.Format("Ending Phase:{0}", gameObject.name.ToString()));
         }
 
         public void SelectByID(int id)
@@ -203,7 +202,7 @@ namespace Assets.Controller.Phase
         {
             if (IsRunning && SelectableItems.Length > 0)
             {
-                Debug.Log(selectionIndex);
+                Debug.Log("Item:" + selectionIndex + " selected.");
                 var s = SelectableItems[selectionIndex];
                 if (s != null)
                 {
@@ -218,20 +217,33 @@ namespace Assets.Controller.Phase
                     }
                 }
             }
-            
         }
 
         public virtual void Activate()
         {
-            var s = SelectableItems[selectionIndex];
-            if (s != null && IsRunning)
+            if (IsRunning)
             {
-                if (s.OnSelected != null)
-                    SelectableItems[selectionIndex].OnActivated.Invoke();
+                var s = SelectableItems[selectionIndex];
+                if (s != null)
+                {
+                    Debug.Log("Item:" + selectionIndex + " Activated.");
 
-                var NextPhase = SelectableItems[selectionIndex].Phase;
-                Controller.StartPhase(NextPhase);
+                    if (s.OnSelected != null)
+                        SelectableItems[selectionIndex].OnActivated.Invoke();
+
+                    var NextPhase = SelectableItems[selectionIndex].Phase;
+                    selectionIndex = 0;
+                    lastSelection = 0;
+                    Controller.StartPhase(NextPhase);
+                }
             }
+        }
+
+        public override void QuitPhase()
+        {
+            selectionIndex = 0;
+            lastSelection = 0;
+            base.QuitPhase();
         }
     }
 }

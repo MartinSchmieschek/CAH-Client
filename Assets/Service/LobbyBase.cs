@@ -12,10 +12,9 @@ namespace Assets.Service
         public UnityEvent OnLeave;
         public UnityEvent OnGameStart;
 
-        public float DataUpdateTime = 30;
+        public float DataUpdateTime = 2;
         public float UpdateTimer;
        
-        public JSONFromWeb lobbyWebload;
         public bool IsObserving = false;
         public Response.Lobby CurrentLobby;
 
@@ -31,6 +30,7 @@ namespace Assets.Service
             }
         }
 
+        public JSONFromWeb lobbyWebload;
         public void UpdateLobbyData()
         {
             if (base.GameProperties.GameId != 0)
@@ -52,7 +52,6 @@ namespace Assets.Service
                 base.Error = "No GameID set";
             }
         }
-
         private void onLobbyUpdateWebloadSucceded()
         {
             if (((Response.Lobby)lobbyWebload.Result).success)
@@ -66,14 +65,13 @@ namespace Assets.Service
                 base.Error = "Lobby webdata has not your GameId";
             }
         }
-
         private void onLobbyUpdateWebloadFail()
         {
             IsObserving = false;
-            base.Error = "Data update failed, Connection to server lost";
+            base.Error = "Connection failed:" + lobbyWebload.Error;
         }
 
-        public void Refresh()
+        public virtual void Refresh()
         {
             UpdateLobbyData();
             UpdateTimer = 0;
@@ -93,17 +91,16 @@ namespace Assets.Service
 
         public void Leave()
         {
-            if (IsObserving)
-            {
-                IsObserving = false;
-            }
+            IsObserving = false;
+
+            base.GameProperties.GameId = 0;
 
             if (OnLeave != null)
                 OnLeave.Invoke();
 
         }
 
-        public void startGame()
+        public void GameStarted()
         {
             if (OnGameStart != null)
                 OnGameStart.Invoke();

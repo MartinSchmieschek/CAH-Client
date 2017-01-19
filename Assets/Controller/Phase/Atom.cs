@@ -4,40 +4,67 @@ using System.Collections;
 
 namespace Assets.Controller.Phase
 {
-    public class Atom : MonoBehaviour
+    /// <summary>
+    /// handles the controller interaction
+    /// </summary>
+    public class Phase : MonoBehaviour
     {
-        //public Phases ThisPhase;
         public PhaseController Controller { get; set; }
 
-        private bool isrunning;
-        public bool IsRunning { get { return isrunning; } }
+        /// <summary>
+        /// Checks in Controller if this phase is running
+        /// </summary>
+        public bool IsRunning {
+            get
+            {
+                if (Controller != null)
+                {
+                    if (((Phase)Controller.CurrentPhase).Equals(this))
+                    {
+                        return true;
+                    }
+                }
 
-        public Atom()
-        {
-            this.isrunning = false;
-        }
+                return false;
 
-        public virtual void Tick(Atom triggerPhase)
+
+            } }
+
+
+        /// <summary>
+        /// Starts Atom, will be called by controller
+        /// </summary>
+        /// <param name="triggerPhase"></param>
+        public virtual void Tick(Phase triggerPhase)
         {
-            isrunning = true;
+            Debug.Log(String.Format("Start Phase:{0}", this.gameObject.name.ToString()));
+       //     isrunning = true;
             StartCoroutine(PhaseIteration(triggerPhase));
         }
 
-        public virtual IEnumerator PhaseIteration(Atom previewesPhase)
+        /// <summary>
+        /// Parraler updating for Game stuff
+        /// </summary>
+        /// <param name="previewesPhase"></param>
+        /// <returns></returns>
+        public virtual IEnumerator PhaseIteration(Phase previewesPhase)
         {
-            Debug.Log(String.Format("Start Phase:{0}", this.gameObject.name.ToString()));
-            while (isrunning)
+            while (IsRunning)
             {
+                Debug.Log(String.Format("Running Atom!"));
                 new WaitForSeconds(Controller.UpdateTimming);
-                Debug.Log(String.Format("EmptyPhaseRunning!"));
                 yield return null;
             }
             yield return null;
         }
 
-        public virtual void Quit ()
+        /// <summary>
+        /// Ends the Phase, will be called by the controller
+        /// </summary>
+        public virtual void QuitPhase ()
         {
-            isrunning = false;
+            Debug.Log(String.Format("Ending Phase:{0}", gameObject.name.ToString()));
+          //  isrunning = false;
         }
     }
 }

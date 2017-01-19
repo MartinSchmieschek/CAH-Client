@@ -1,12 +1,19 @@
 ﻿using System;
 using UnityEngine.Events;
 
+// überflüssig muss gelöscht werden
+
 namespace Assets.Service
 {
-    class Card : APIBase
+
+    /// <summary>
+    /// testkalsse für die Api und Communication mit server. Dies wird nicht im Programm genutzt siehe Game.GameRound
+    /// </summary>
+    class TestCard : APIBase
     {
         private JSONFromWeb drawCardWebLoad;
-
+        public UnityEvent OnDrawCardSucceded = new UnityEvent();
+        public Response.Cards DrawnCards;
         public void DrawCard()
         {
             if (base.GameProperties.GameId != 0 && !string.IsNullOrEmpty(base.GameProperties.Token))
@@ -23,7 +30,7 @@ namespace Assets.Service
                     Value = base.GameProperties.Token.ToString()
                 };
 
-                drawCardWebLoad = new JSONFromWeb("GetLobbyState", base.GameProperties.GameServer + @"/card/draw-card", new Token[] { gid, ct }, typeof(Response.Cards));
+                drawCardWebLoad = new JSONFromWeb("DrawCard", base.GameProperties.GameServer + @"/card/draw-card", new Token[] { gid, ct }, typeof(Response.Cards));
                 drawCardWebLoad.OnSuccess += new UnityAction(onDrawCardWebloadSucceded);
                 drawCardWebLoad.OnFail += new UnityAction(onDrawCardWebloadFailed);
 
@@ -39,7 +46,9 @@ namespace Assets.Service
         {
             if (((Response.Cards)drawCardWebLoad.Result).success)
             {
-                throw new NotImplementedException();
+                DrawnCards = (Response.Cards)drawCardWebLoad.Result;
+                if (OnDrawCardSucceded != null)
+                    OnDrawCardSucceded.Invoke();
             }
             else
             {

@@ -39,8 +39,8 @@ public class Card : MonoBehaviour
     }
 
     public float TextVisibility = 100;
-    private TextMesh textMesh;
-    private MeshRenderer cardMeshRenderer;
+    public TextMesh textMesh;
+    public MeshRenderer cardMeshRenderer;
     private bool isBlack;
     public bool IsBlack
     {
@@ -68,13 +68,6 @@ public class Card : MonoBehaviour
 
     void Awake()
     {
-        if (gameObject != null)
-        {
-            textMesh = GetComponentInChildren<TextMesh>();
-            textMesh.text = CardText;
-
-            cardMeshRenderer = gameObject.GetComponentInChildren<MeshRenderer>();
-        }
 
     }
 
@@ -88,7 +81,7 @@ public class Card : MonoBehaviour
 
     private void setTextToCard()
     {
-        string tmp = "";
+        
         string final = "";
         string currLine = "";
 
@@ -119,10 +112,12 @@ public class Card : MonoBehaviour
         final += currLine;
 
         //Text fade in
-        for (int i = 0; i < (int)(CardText.Length * (TextVisibility / 100)); i++)
-        {
-            tmp += final[i];
-        }
+        //string tmp = "";
+        //for (int i = 0; i < (int)(final.Length * (TextVisibility / 100)); i++)
+        //{
+        //    tmp += final[i];
+        //}
+        //final = tmp;
 
         textMesh.text = final;
     }

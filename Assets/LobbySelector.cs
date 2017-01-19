@@ -17,10 +17,11 @@ public class LobbySelector : Selector {
     public float ItemDistance = 1.2f;
     public int NumRows = 2;
     public float RowDistance = 2f;
-    public Atom JoinLobbyPhase;
+    public Phase JoinLobbyPhase;
+    public float UpdateTimming = 15f;
 
     private List<SelectorActor> CreatedItems = new List<SelectorActor>();
-    private List<LobbyInfo> shownLobbys = new List<LobbyInfo>();
+    private List<LobbyInfo> onScreenShownLobbys = new List<LobbyInfo>();
 
     private int currentStartId = 0;
 
@@ -29,9 +30,33 @@ public class LobbySelector : Selector {
         lobbyLoader = GetComponent<LobbyLoader>();
         if (lobbyLoader == null)
             throw new System.Exception("No LobbyLoader assigned");
-        //lobbyLoader.OnRefresh += new UnityAction(UpdateLobbyData);
     }
 
+    // erste initialisierung
+    private UnityAction ItemInitalisierung;
+
+    private void initItems()
+    {
+        lobbyLoader.Refresh();
+        ItemInitalisierung = new UnityAction(finishInit);
+        lobbyLoader.OnRefreshed += ItemInitalisierung;
+    }
+
+    private void finishInit()
+    {
+        lobbyLoader.OnRefreshed -= ItemInitalisierung;
+        CleanCreatedItems();
+        CreateLobbyItems();
+    }
+
+    // Controller Toggle
+    public override void Tick(Phase triggerPhase)
+    {
+        initItems();
+        base.Tick(triggerPhase);
+    }
+
+    // Item List Handling
     public void ScrollListBack()
     {
         if (IsRunning)
@@ -52,15 +77,6 @@ public class LobbySelector : Selector {
             }
     }
 
-    // Update is called once per frame
-    void Update () {
-	    if (lobbyLoader.Connected)
-        {
-            if (CreatedItems.Count == 0)
-                CreateLobbyItems();
-        }
-	}
-
     public void UpdateLobbyItems()
     {
         CleanCreatedItems();
@@ -77,25 +93,7 @@ public class LobbySelector : Selector {
 
         CreatedItems = new List<SelectorActor>();
         base.SelectableItems = new SelectorItem[]{ };
-        shownLobbys = new List<LobbyInfo>();
-    }
-
-    public override IEnumerator PhaseIteration(Atom previewesPhase)
-    {
-        Debug.Log(String.Format("Start Phase:{0}", gameObject.name.ToString()));
-
-        while (IsRunning)
-        {
-            Debug.Log(String.Format("Running Phase:{0}", gameObject.name.ToString()));
-
-            new WaitForSeconds(Controller.UpdateTimming);
-
-            // Update lobby list silent
-
-            yield return null;
-        }
-
-        Debug.Log(String.Format("Ending Phase:{0}", gameObject.name.ToString()));
+        onScreenShownLobbys = new List<LobbyInfo>();
     }
 
     private void CreateLobbyItems()
@@ -125,28 +123,56 @@ public class LobbySelector : Selector {
             sa.transform.localScale = scale;
             sa.transform.rotation = rot;
 
-            Phase ph = sa.gameObject.GetComponent<Phase>();
+            Step ph = sa.gameObject.GetComponent<Step>();
             ph.NextPhase = JoinLobbyPhase;
 
             Card card = sa.GetComponentInChildren<Card>();
             if (card != null)
             {
-                card.CardText = String.Format("Name:\n{0}\n\nPlayers:{1}/{2}\nTarget Score:{3}\nLast Activity:{4}minutes ago",
-                lobby.game_name, lobby.user_count, lobby.max_players, lobby.target_score, (DateTime.Now - lobby.last_activity).TotalMinutes);
+                //\nLast Activity:{4}minutes ago
+                //(DateTime.Now - lobby.last_activity).TotalMinutes) // Anzeige ist nicht korrekt, lobby.last_activity überprüfen
+
+                card.CardText = String.Format("Name:\n{0}\n\nPlayers:{1}/{2}\nTarget Score:{3}",
+                lobby.game_name, lobby.user_count, lobby.max_players, lobby.target_score);
             }
 
             CreatedItems.Add(sa);
             base.AddActor(sa);
-            shownLobbys.Add(lobby);
+            onScreenShownLobbys.Add(lobby);
 
         }
     }
 
     public override void Activate()
     {
+        lobbyLoader.GameProperties.GameId = onScreenShownLobbys[base.SelectionIndex].game_id;
         base.Activate();
-        lobbyLoader.StopObserving();
-        lobbyLoader.GameProperties.GameId = shownLobbys[base.SelectionIndex].game_id;
+        
+    }
+
+    public override void QuitPhase()
+    {
+        CleanCreatedItems();
+        base.QuitPhase();
+    }
+
+    // Updating
+    public override IEnumerator PhaseIteration(Phase previewesPhase)
+    {
+        Debug.Log(String.Format("Start Phase:{0}", gameObject.name.ToString()));
+
+        while (IsRunning)
+        {
+            Debug.Log(String.Format("Running Phase:{0}", gameObject.name.ToString()));
+
+            lobbyLoader.Refresh();
+
+            new WaitForSeconds(UpdateTimming);
+
+            yield return null;
+        }
+
+        Debug.Log(String.Format("Ending Phase:{0}", gameObject.name.ToString()));
     }
 
 }

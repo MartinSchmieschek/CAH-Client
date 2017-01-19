@@ -9,7 +9,8 @@ namespace Assets.Service
     {
         public float DownloadStatusUpdateTimmer = 0.05f;
         public float QueueUpdateTimer = 0.1f;
-        public bool isLoading = false;
+        private bool isLoading = false;
+        public bool IsLoading { get { return this.isLoading; } }
         private int historySize = 100;
 
         // dataload

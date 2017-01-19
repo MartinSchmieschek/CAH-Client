@@ -12,9 +12,10 @@ namespace Assets.Service
 
         public string GameName { get; set;}
         public UnityEvent OnSucces;
-        private JSONFromWeb data;
+        
         bool isCreating = false;
 
+        private JSONFromWeb createLobbyWebload;
         public void CreateLobby()
         {
             if (!string.IsNullOrEmpty(GameName) && !isCreating)
@@ -31,10 +32,10 @@ namespace Assets.Service
                     Value = GameName,
                 };
 
-                data = new JSONFromWeb("CreateLobby", GameProperties.GameServer + @"/lobby/create-lobby", new Token[] { dat, nam }, typeof(Response.LobbyCreate));
-                data.OnFail += (new UnityAction(this.onCreationFailed));
-                data.OnSuccess += (new UnityAction(this.onCreationSucceded));
-                GameProperties.WebLoader.AddDownload(data);
+                createLobbyWebload = new JSONFromWeb("CreateLobby", GameProperties.GameServer + @"/lobby/create-lobby", new Token[] { dat, nam }, typeof(Response.LobbyCreate));
+                createLobbyWebload.OnFail += (new UnityAction(this.onCreationFailed));
+                createLobbyWebload.OnSuccess += (new UnityAction(this.onCreationSucceded));
+                GameProperties.WebLoader.AddDownload(createLobbyWebload);
 
                 isCreating = true;
             }
@@ -42,12 +43,11 @@ namespace Assets.Service
                 base.Error = "No Game name assigned";
 
         }
-
         private void onCreationSucceded()
         {
-            if (data.IsDone)
+            if (createLobbyWebload.IsDone)
             {
-                Response.LobbyCreate result = (Response.LobbyCreate)data.Result;
+                Response.LobbyCreate result = (Response.LobbyCreate)createLobbyWebload.Result;
                 if (result.success)
                 {
                     base.GameProperties.GameId = result.game_id;
@@ -65,10 +65,9 @@ namespace Assets.Service
             }
 
         }
-
         private void onCreationFailed()
         {
-            Error = "Connection failed";
+            base.Error = "Connection failed:" + createLobbyWebload.Error;
             isCreating = false;
         }
 

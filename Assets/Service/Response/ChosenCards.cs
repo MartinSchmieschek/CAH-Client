@@ -5,9 +5,10 @@ using System.Text;
 
 namespace Assets.Service.Response
 {
+    [Serializable]
     public class ChosenCards : ResponseBase
     {
-        public Cards[] cards;
+        public Card[] cards;
         public bool all_chosen;
     }
 }

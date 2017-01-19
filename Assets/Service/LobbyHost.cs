@@ -10,9 +10,15 @@ namespace Assets.Service
 {
     public class LobbyHost : LobbyBase
     {
-        private JSONFromWeb startGameWebload;
+        
         private bool tryToStart = false;
 
+        public void JoinHostedLobby()
+        {
+            IsObserving = true;
+        }
+
+        private JSONFromWeb startGameWebload;
         public void StartGame()
         {
             if (base.GameProperties.GameId != 0 && !string.IsNullOrEmpty(base.GameProperties.Token) && !tryToStart)
@@ -38,31 +44,31 @@ namespace Assets.Service
             else
             {
                 base.Error = "No GameID or clientToken set";
+                this.Leave();
             }
         }
-
         private void onGameStartedWebloadSucceded ()
         {
             if (((Response.StartGame)startGameWebload.Result).success)
             {
                 tryToStart = false;
                 base.IsObserving = false;
-                this.startGame();
+                base.GameStarted();
             }
             else
             {
                 tryToStart = false;
                 IsObserving = false;
-                this.Leave();
                 base.Error = "Start Game failed, server rejected you.";
+                this.Leave();
+                
             }
         }
-
         private void onGameStartedWebloadFailed()
         {
             tryToStart = false;
             IsObserving = false;
-            base.Error = "Game started failed, no connection to server.";
+            base.Error = "Connection failed:" + startGameWebload.Error;
             this.Leave();
         }
 

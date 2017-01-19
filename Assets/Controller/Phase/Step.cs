@@ -5,32 +5,31 @@ using UnityEngine.Events;
 
 namespace Assets.Controller.Phase
 {
-    public class End : Phase
+    public class Step : Phase
     {
 
         public UnityEvent OnActivate;
 
+        public Phase NextPhase;
+
+        public Step()
+        {
+            this.NextPhase = null;
+        }
+
         public override void Tick(Phase triggerPhase)
         {
             base.Tick(triggerPhase);
+
             if (OnActivate != null)
                 OnActivate.Invoke();
         }
 
         public override IEnumerator PhaseIteration(Phase previewesPhase)
         {
-            while (IsRunning)
-            {
-                Debug.Log(String.Format("Running End!:" + this.gameObject.name.ToString()));
-                new WaitForSeconds(Controller.UpdateTimming);
-                yield return null;
-            }
+            Debug.Log(String.Format("Run Step:{0}", gameObject.name.ToString()));
+            Controller.StartPhase(NextPhase);
             yield return null;
-        }
-
-        public override void QuitPhase()
-        {
-            base.QuitPhase();
         }
     }
 }

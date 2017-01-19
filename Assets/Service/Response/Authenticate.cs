@@ -5,6 +5,7 @@ using System.Text;
 
 namespace Assets.Service.Response
 {
+    [Serializable]
     public class Authenticate : ResponseBase
     {
         public string clientToken;
